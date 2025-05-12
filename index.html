@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piano App per Bambini - Debug Loading</title> <!-- Titolo aggiornato per debug -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header id="main-header">
+        <nav id="top-navigation">
+            <button id="btn-teoria-musicale" class="nav-button">Teoria Musicale</button>
+            <button id="btn-esercizi-teorici" class="nav-button">Esercizi di Teoria</button>
+            <!-- Altri pulsanti di navigazione principali -->
+        </nav>
+        <div id="global-controls">
+            <button id="toggle-staff-note-names-btn" class="utility-btn">Note Scritte (Pentagramma) On/Off</button>
+            <!-- PULSANTE AGGIUNTO -->
+            <button id="btnClearStaff" class="utility-btn">Pulisci Pentagramma</button>
+            <span id="midi-status-indicator">MIDI: Non connesso</span>
+        </div>
+    </header>
+
+    <main id="content-area">
+        <div id="main-tv-screens-container">
+            <div class="main-tv-screen" id="left-main-tv">
+                <div class="main-tv-screen-content">
+                    <h2>Schermo Feedback / Storie</h2>
+                    <p>(Qui appariranno video o immagini)</p>
+                </div>
+            </div>
+            <div class="main-tv-screen" id="right-main-tv">
+                <div class="main-tv-screen-content">
+                    <h2>Schermo Istruttivo / Esercizi</h2>
+                    <p>(Qui appariranno video o immagini)</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer id="piano-section-footer">
+        <div id="staff-above-keyboard">
+            <div id="vexflow-staff-output">
+                <!-- VexFlow disegnerà il pentagramma qui -->
+            </div>
+        </div>
+
+        <div id="keyboard-and-controls-wrapper">
+            <div id="left-keyboard-controls" class="side-controls">
+                <button id="btn-play" class="playback-btn" aria-label="Play">▶️</button>
+                <button id="btn-pause" class="playback-btn" aria-label="Pausa">⏸️</button>
+                <button id="btn-stop" class="playback-btn" aria-label="Stop">⏹️</button>
+            </div>
+
+            <div class="piano-container">
+                <div class="piano" id="piano-keys">
+                    <!-- TASTI BIANCHI (Solo C3-C5) -->
+                    <div class="key white" data-midi="48" data-note="C3" data-note-name="Do">C3</div>
+                    <div class="key white" data-midi="50" data-note="D3" data-note-name="Re">D3</div>
+                    <div class="key white" data-midi="52" data-note="E3" data-note-name="Mi">E3</div>
+                    <div class="key white" data-midi="53" data-note="F3" data-note-name="Fa">F3</div>
+                    <div class="key white" data-midi="55" data-note="G3" data-note-name="Sol">G3</div>
+                    <div class="key white" data-midi="57" data-note="A3" data-note-name="La">A3</div>
+                    <div class="key white" data-midi="59" data-note="B3" data-note-name="Si">B3</div>
+                    <div class="key white" data-midi="60" data-note="C4" data-note-name="Do">C4</div>
+                    <div class="key white" data-midi="62" data-note="D4" data-note-name="Re">D4</div>
+                    <div class="key white" data-midi="64" data-note="E4" data-note-name="Mi">E4</div>
+                    <div class="key white" data-midi="65" data-note="F4" data-note-name="Fa">F4</div>
+                    <div class="key white" data-midi="67" data-note="G4" data-note-name="Sol">G4</div>
+                    <div class="key white" data-midi="69" data-note="A4" data-note-name="La">A4</div>
+                    <div class="key white" data-midi="71" data-note="B4" data-note-name="Si">B4</div>
+                    <div class="key white" data-midi="72" data-note="C5" data-note-name="Do">C5</div>
+
+                    <!-- TASTI NERI (Solo C#3-A#4) - POSIZIONI AGGIUSTATE -->
+                    <div class="key black" data-midi="49" data-note="C#3" data-note-name="Do#" style="left: calc(1 * 45px - 13px);"><span class="note-name-black">Do#3</span></div>
+                    <div class="key black" data-midi="51" data-note="D#3" data-note-name="Re#" style="left: calc(2 * 45px - 13px);"><span class="note-name-black">Re#3</span></div>
+                    <div class="key black" data-midi="54" data-note="F#3" data-note-name="Fa#" style="left: calc(4 * 45px - 13px);"><span class="note-name-black">Fa#3</span></div>
+                    <div class="key black" data-midi="56" data-note="G#3" data-note-name="Sol#" style="left: calc(5 * 45px - 13px);"><span class="note-name-black">Sol#3</span></div>
+                    <div class="key black" data-midi="58" data-note="A#3" data-note-name="La#" style="left: calc(6 * 45px - 15px);"><span class="note-name-black">La#3</span></div>
+                    <div class="key black" data-midi="61" data-note="C#4" data-note-name="Do#" style="left: calc(8 * 45px - 13px);"><span class="note-name-black">Do#4</span></div>
+                    <div class="key black" data-midi="63" data-note="D#4" data-note-name="Re#" style="left: calc(9 * 45px - 13px);"><span class="note-name-black">Re#4</span></div>
+                    <div class="key black" data-midi="66" data-note="F#4" data-note-name="Fa#" style="left: calc(11 * 45px - 13px);"><span class="note-name-black">Fa#4</span></div>
+                    <div class="key black" data-midi="68" data-note="G#4" data-note-name="Sol#" style="left: calc(12 * 45px - 13px);"><span class="note-name-black">Sol#4</span></div>
+                    <div class="key black" data-midi="70" data-note="A#4" data-note-name="La#" style="left: calc(13 * 45px - 13px);"><span class="note-name-black">La#4</span></div>
+                </div>
+            </div>
+            <div id="right-keyboard-controls" class="side-controls">
+                <button id="toggle-keyboard-note-names-btn" aria-label="Mostra o nascondi nomi note sulla tastiera">Nomi Note (Tastiera)</button>
+            </div>
+        </div>
+    </footer>
+    <!-- Carica prima VexFlow dalla CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.3/build/cjs/vexflow.js"></script>
+    <!-- Carica poi i tuoi script principali (come moduli) -->
+    <!-- !!! PERCORSI CORRETTI PUNTANO ALLA CARTELLA PRINCIPALE !!! -->
+    <script type="module" src="vexflow_renderer.js"></script>
+    <script type="module" src="main.js"></script>
+    <script type="module" src="midi_handler.js"></script>
+    <script type="module" src="theory_notes_display.js"></script> <!-- Assicurati che sia importato -->
+    <script type="module" src="quiz_exercise.js"></script> <!-- Assicurati che sia importato -->
+</body>
+</html>
