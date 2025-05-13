@@ -2,18 +2,17 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
     font-family: 'Arial', sans-serif;
-    /* Sfondo generale leggermente azzurro */
     background-color: #e1f5fe; /* Very light blue */
     color: #333;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    overflow: hidden; /* Mantenuto overflow hidden sul body per evitare scroll indesiderato */
+    padding-bottom: 300px; /* ESEMPIO: Spazio per il footer fisso. REGOLA QUESTO VALORE! */
+                           /* Dovrebbe essere circa l'altezza del tuo #piano-section-footer */
 }
 
 /* --- Header Superiore --- */
 #main-header {
-    /* Sfondo header azzurro chiaro */
     background-color: #64b5f6; /* Light blue */
     padding: 10px 20px;
     display: flex;
@@ -21,361 +20,326 @@ body {
     align-items: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     width: 100%;
-    z-index: 1001;
+    z-index: 1001; /* Sopra il footer se necessario, ma il footer è fisso in basso */
 }
 #top-navigation { display: flex; }
 #top-navigation .nav-button {
-    /* MODIFICATO: Pulsanti navigazione viola */
     padding: 10px 18px; background-color: #ab47bc; /* Purple */
-    color: white;
-    border: none; border-radius: 6px; cursor: pointer;
+    color: white; border: none; border-radius: 6px; cursor: pointer;
     font-size: 1em; margin-right: 10px; transition: background-color 0.2s;
 }
-#top-navigation .nav-button:hover {
-    /* MODIFICATO: Hover pulsanti navigazione viola scuro */
-    background-color: #8e24aa; /* Dark purple */
-}
+#top-navigation .nav-button:hover { background-color: #8e24aa; /* Dark purple */ }
 #top-navigation .nav-button:last-child { margin-right: 0; }
-
-/* --- Stile per il pulsante di navigazione attivo --- */
 #top-navigation .nav-button.active {
-    /* MODIFICATO: Pulsante attivo viola ancora più scuro */
     background-color: #5e35b1; /* Even darker purple */
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
 }
 
-
 #global-controls { display: flex; align-items: center; gap: 15px; }
 .utility-btn {
-    /* Pulsanti utility viola */
     padding: 8px 12px; background-color: #ab47bc; /* Purple */
-    color: white;
-    border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em;
+    color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em;
 }
-.utility-btn:hover {
-    /* Hover pulsanti utility viola scuro */
-    background-color: #8e24aa; /* Dark purple */
-}
+.utility-btn:hover { background-color: #8e24aa; /* Dark purple */ }
 #midi-status-indicator {
-    /* Stato MIDI neutro */
     font-size: 0.9em; padding: 8px 12px; background-color: #f0f0f0;
     border-radius: 4px; border: 1px solid #ccc;
 }
-/* Colori stato MIDI (mantenuti per chiarezza funzionale) */
 #midi-status-indicator.connected { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
 #midi-status-indicator.error { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
 
-/* --- Area Contenuto Principale (con TV o Esercizi/Teoria) --- */
+/* --- Area Contenuto Principale --- */
 #content-area {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto; /* Permette lo scroll se il contenuto è troppo lungo */
-    /* Sfondo area contenuto celeste chiaro */
-    background-color: #e3f2fd; /* Lighter blue */
-    display: flex;
-    flex-direction: column;
+    flex-grow: 1; 
+    padding: 20px; 
+    overflow-y: auto; /* Permette lo scroll se il contenuto è più alto dello spazio disponibile */
+    background-color: #e3f2fd; 
+    display: flex; 
+    flex-direction: column; 
     align-items: center;
-    /* Aggiunge padding in basso per non nascondere il contenuto sotto il footer */
-    padding-bottom: 200px; /* Assicurati che sia sufficiente per l'altezza del footer */
+    /* Il padding-bottom per il footer è ora sul body, ma se lo preferisci qui, spostalo */
 }
 
-#main-tv-screens-container {
-    display: flex;
-    gap: 20px;
-    width: 100%;
-    max-width: 1200px;
+/* Stili per lo Schermo TV Centrale */
+#main-tv-screens-container { 
+    display: flex; 
+    justify-content: center; 
+    width: 100%; 
     margin-bottom: 20px;
-    /* Questo contenitore viene nascosto/mostrato da main.js */
+    /* position: relative; /* Aggiunto per z-index se necessario */
+    /* z-index: 1; /* Per assicurarsi che sia sopra lo sfondo del body ma sotto l'header */
 }
 
-.main-tv-screen {
-    /* Sfondo TV leggermente indaco */
-    flex: 1;
-    background-color: #e8eaf6; /* Light indigo */
-    /* Bordo TV indaco */
-    border: 4px solid #3f51b5; /* Indigo */
-    border-radius: 12px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+#center-main-tv { 
+    width: 100%; 
+    max-width: 400px; 
+    border: 4px solid #3f51b5; 
+    border-radius: 12px; 
+    padding: 15px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
     align-items: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-    overflow: hidden;
-    min-height: 200px; /* Altezza TV ridotta */
-}
-.main-tv-screen-content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    /* Colore testo TV indaco scuro */
-    color: #1a237e; /* Dark indigo */
-}
-.main-tv-screen-content h2 { margin-bottom: 10px; }
-.main-tv-screen-content video,
-.main-tv-screen-content img {
-    max-width: 100%;
-    max-height: calc(100% - 40px);
-    object-fit: contain;
-    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15); 
+    overflow: hidden; 
+    min-height: 250px; 
+    position: relative; 
+    background-image: url('media/images/sfondo_tv_centrale.png'); 
+    background-size: cover; 
+    background-position: center center; 
+    background-repeat: no-repeat; 
 }
 
-/* --- Stili per l'Area Esercizi/Teoria --- */
-/* Usiamo gli stessi stili per entrambi gli ambienti */
-#exercise-container,
-#theory-container {
-    width: 100%;
-    max-width: 800px; /* Larghezza massima per il contenuto */
-    /* Margine superiore per spazio "lavagna" */
-    margin: 80px auto 20px auto;
-    padding: 20px;
-    background-color: #ffffff; /* Sfondo bianco per la card interna */
-    border: 1px solid #ccc; /* Bordo neutro */
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    text-align: center; /* Centra il testo */
+#center-main-tv .main-tv-screen-content {
+    position: relative; 
+    z-index: 1; 
+    background-color: rgba(255, 255, 255, 0); 
+    padding: 20px; 
+    border-radius: 8px; 
+    text-align: center; 
+    color: hwb(295 15% 15%); 
+    width: 90%; 
+    box-sizing: border-box; 
 }
-
-#exercise-container h2,
-#theory-container h2 {
-    /* Colore titolo indaco */
-    color: #3f51b5; /* Indigo */
-    margin-bottom: 10px;
+#center-main-tv .main-tv-screen-content h2 { 
+    margin-bottom: 10px; 
+    font-size: 3.2em; 
 }
-
-#exercise-container p,
-#theory-container p {
-    margin-bottom: 20px;
-    font-size: 1.1em;
-    color: #555; /* Testo grigio scuro */
-}
-
-#exercise-staff-output,
-#theory-staff-output {
-    /* Margine top/bottom, 0 sui lati */
-    margin: 20px auto 10px auto;
-    width: 100%;
-    height: 120px; /* Altezza FISSA per il pentagramma */
-    background-color: #fff; /* Sfondo pentagramma bianco */
-    /* Bordo pentagramma blu-grigio scuro */
-    border: 1px solid #607d8b; /* Dark blue-gray */
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-#exercise-staff-output svg,
-#theory-staff-output svg {
-     display: block;
-     width: 100% !important;
-     height: 100% !important;
-}
-
-#exercise-feedback,
-#theory-feedback {
-    margin-top: 20px;
-    font-size: 1.2em;
-    font-weight: bold;
-    min-height: 1.5em; /* Riserva spazio per il feedback */
-    /* Colori feedback gestiti in JS (verde, rosso, blu) */
-}
-
-/* --- Stili per i Pulsanti di Input Esercizi/Teoria --- */
-/* Usiamo gli stessi stili per entrambi gli ambienti */
-#exercise-input-buttons,
-#theory-input-buttons {
-    /* Margine superiore per avvicinare al pentagramma */
-    margin-top: 10px;
-    display: flex; /* Usa flexbox per allineare i pulsanti */
-    flex-wrap: wrap; /* Permette ai pulsanti di andare a capo su più righe */
-    justify-content: center; /* Centra i pulsanti orizzontalmente */
-    gap: 10px; /* Spazio tra i pulsanti */
-}
-
-.exercise-note-button { /* Classe riutilizzata */
-    /* MODIFICATO: Rimosso background-color fisso qui */
-    padding: 10px 15px;
-    color: white; /* Testo bianco */
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+#center-main-tv .main-tv-screen-content p {
     font-size: 1em;
-    transition: background-color 0.2s ease;
-    min-width: 60px; /* Larghezza minima per i pulsanti */
-    text-align: center;
-    /* Aggiunto bordo per visibilità */
-    border: 1px solid rgba(0,0,0,0.2); /* Bordo leggero per definire il pulsante */
+    line-height: 1.4;
 }
 
-/* --- Colori semi-trasparenti per i Pulsanti (NUOVO) --- */
-/* Ispirati al metallofono */
-.exercise-note-button[data-note-name-italian^="do"] { background-color: rgba(26, 35, 126, 0.6); } /* Do - Dark Indigo */
-.exercise-note-button[data-note-name-italian^="re"] { background-color: rgba(33, 150, 243, 0.6); } /* Re - Blue */
-.exercise-note-button[data-note-name-italian^="mi"] { background-color: rgba(76, 175, 80, 0.6); } /* Mi - Green */
-.exercise-note-button[data-note-name-italian^="fa"] { background-color: rgba(255, 235, 59, 0.6); } /* Fa - Yellow */
-.exercise-note-button[data-note-name-italian^="sol"] { background-color: rgba(255, 152, 0, 0.6); } /* Sol - Orange */
-.exercise-note-button[data-note-name-italian^="la"] { background-color: rgba(244, 67, 54, 0.6); } /* La - Red */
-.exercise-note-button[data-note-name-italian^="si"] { background-color: rgba(156, 39, 176, 0.6); } /* Si - Purple */
-
-/* Hover e Active per i pulsanti colorati */
-.exercise-note-button[data-note-name-italian^="do"]:hover { background-color: rgba(26, 35, 126, 0.8); }
-.exercise-note-button[data-note-name-italian^="re"]:hover { background-color: rgba(33, 150, 243, 0.8); }
-.exercise-note-button[data-note-name-italian^="mi"]:hover { background-color: rgba(76, 175, 80, 0.8); }
-.exercise-note-button[data-note-name-italian^="fa"]:hover { background-color: rgba(255, 235, 59, 0.8); }
-.exercise-note-button[data-note-name-italian^="sol"]:hover { background-color: rgba(255, 152, 0, 0.8); }
-.exercise-note-button[data-note-name-italian^="la"]:hover { background-color: rgba(244, 67, 54, 0.8); }
-.exercise-note-button[data-note-name-italian^="si"]:hover { background-color: rgba(156, 39, 176, 0.8); }
-
-.exercise-note-button[data-note-name-italian^="do"]:active { background-color: rgba(26, 35, 126, 1); }
-.exercise-note-button[data-note-name-italian^="re"]:active { background-color: rgba(33, 150, 243, 1); }
-.exercise-note-button[data-note-name-italian^="mi"]:active { background-color: rgba(76, 175, 80, 1); }
-.exercise-note-button[data-note-name-italian^="fa"]:active { background-color: rgba(255, 235, 59, 1); }
-.exercise-note-button[data-note-name-italian^="sol"]:active { background-color: rgba(255, 152, 0, 1); }
-.exercise-note-button[data-note-name-italian^="la"]:active { background-color: rgba(244, 67, 54, 1); }
-.exercise-note-button[data-note-name-italian^="si"]:active { background-color: rgba(156, 39, 176, 1); }
-
-
-/* --- Footer Fisso con Elementi Musicali --- */
-#piano-section-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    /* Sfondo footer blu-grigio */
-    background-color: #b0bec5; /* Blue-gray */
-    box-shadow: 0 -4px 10px rgba(0,0,0,0.25);
-    z-index: 1000;
-    display: flex; /* Default display */
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 0;
+/* --- Stili Aree Esercizi/Teoria --- */
+#exercise-container, #theory-container, #duration-theory-container,
+#interval-theory-container, #alteration-theory-container, #triad-theory-container, 
+#duration-exercise-container, #interval-exercise-container, #alteration-exercise-container, #triad-exercise-container { 
+    width: 100%; max-width: 800px; margin: 20px auto; padding: 20px;
+    background-color: #ffffff; border: 1px solid #cc1c97; border-radius: 50px; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; flex-shrink: 0;
+}
+#exercise-container h2, #theory-container h2, #duration-theory-container h2,
+#interval-theory-container h2, #alteration-theory-container h2, #triad-theory-container h2, 
+#duration-exercise-container h2, #interval-exercise-container h2, #alteration-exercise-container h2, #triad-exercise-container h2 { 
+    color: #3f51b5; margin-bottom: 10px;
+}
+#exercise-container p, #theory-container p, #duration-theory-container p,
+#interval-theory-container p, #alteration-theory-container p, #triad-theory-container p, 
+#duration-exercise-container p, #interval-exercise-container p, #alteration-exercise-container p, #triad-exercise-container p { 
+    margin-bottom: 20px; font-size: 1.1em; color: #555;
 }
 
-/* --- Stile per nascondere il Footer --- */
-#piano-section-footer.hidden {
-    display: none !important; /* Usa !important per assicurarti che venga nascosto */
+/* Regola generica per i contenitori dei pentagrammi degli esercizi/teoria */
+#exercise-staff-output, #theory-staff-output,
+#duration-exercise-staff-output, #interval-theory-staff, #alteration-theory-staff,
+#triad-theory-staff, 
+#interval-exercise-staff, #alteration-exercise-staff, #triad-exercise-staff { 
+    margin: 20px auto 10px auto; 
+    width: 100%; 
+    height: 120px; 
+    background-color: #fff;
+    border: 1px solid #607d8b; border-radius: 4px;
+    overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-
-/* Pentagramma sopra la tastiera (nel footer) */
-#staff-above-keyboard {
-    width: 90%;
-    max-width: 950px;
-    height: 150px;  /* Altezza pentagramma aumentata */
-    background-color: #fff; /* Sfondo pentagramma bianco */
-    /* Bordo pentagramma blu-grigio scuro */
-    border: 2px solid #607d8b; /* Dark blue-gray */
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-#vexflow-staff-output {
-     width: 100%;
-     height: 100%;
-}
-#vexflow-staff-output svg {
-     display: block;
-     width: 100% !important;
-     height: 100% !important;
+/* Altezza specifica per alcuni pentagrammi */
+#duration-staff-output, /* ID per teoria durate */
+#duration-exercise-staff-output, 
+#interval-theory-staff, #alteration-theory-staff, #triad-theory-staff, 
+#interval-exercise-staff, #alteration-exercise-staff, #triad-exercise-staff { 
+    height: 100px; 
 }
 
+/* Regola per alzare specificamente il pentagramma della teoria delle durate */
+#duration-staff-output {
+    margin-top: 5px; 
+    margin-bottom: 15px; 
+}
 
-/* Riga Tastiera e Controlli */
-#keyboard-and-controls-wrapper {
-    /* Sfondo wrapper tastiera blu-grigio scuro */
-    display: flex; justify-content: center; align-items: center;
-    width: auto; max-width: 100%; padding: 8px 15px;
-    background-color: #455a64; /* Dark blue-gray */
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+#exercise-staff-output svg, #theory-staff-output svg, #duration-staff-output svg,
+#duration-exercise-staff-output svg, #interval-theory-staff svg, #alteration-theory-staff svg,
+#triad-theory-staff svg, 
+#interval-exercise-staff svg, #alteration-exercise-staff svg, #triad-exercise-staff svg { 
+     display: block; width: 100% !important; height: 100% !important;
 }
-.side-controls {
-    display: flex; flex-direction: column; align-items: center;
-    padding: 0 10px; align-self: stretch; justify-content: center;
+#exercise-feedback, #theory-feedback, #duration-feedback,
+#duration-exercise-feedback, #interval-exercise-feedback,
+#alteration-exercise-feedback, #triad-exercise-feedback { 
+    margin-top: 20px; font-size: 1.2em; font-weight: bold; min-height: 1.5em;
 }
-.side-controls button {
-    /* Pulsanti controlli laterali blu-grigio */
-    padding: 7px 10px; margin: 4px 0; background-color: #78909c; /* Blue-gray */
+
+/* --- Stili Pulsanti Input Piccoli --- */
+#exercise-input-buttons, #theory-input-buttons, #duration-input-buttons,
+#duration-exercise-input-buttons, #interval-theory-buttons, #alteration-theory-buttons,
+#triad-theory-buttons, 
+#interval-exercise-buttons, #alteration-exercise-buttons, 
+#triad-exercise-buttons { 
+    margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+}
+.exercise-note-button {
+    padding: 10px 15px; color: white; border: none; border-radius: 5px; cursor: pointer;
+    font-size: 1em; transition: background-color 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+    min-width: 60px; text-align: center; 
+    border: 1px solid rgba(0,0,0,0.2); 
+}
+.exercise-note-button[data-note-name-italian^="do"] { background-color: rgba(26, 35, 126, 0.6); }
+.exercise-note-button[data-note-name-italian^="re"] { background-color: rgba(33, 150, 243, 0.6); }
+.exercise-note-button[data-note-name-italian^="mi"] { background-color: rgba(76, 175, 80, 0.6); }
+.exercise-note-button[data-note-name-italian^="fa"] { background-color: rgba(255, 235, 59, 0.6); }
+.exercise-note-button[data-note-name-italian^="sol"] { background-color: rgba(255, 152, 0, 0.6); }
+.exercise-note-button[data-note-name-italian^="la"] { background-color: rgba(244, 67, 54, 0.6); }
+.exercise-note-button[data-note-name-italian^="si"] { background-color: rgba(156, 39, 176, 0.6); }
+.exercise-note-button[data-note-name-italian]:hover { filter: brightness(110%); }
+.exercise-note-button[data-note-name-italian]:active { filter: brightness(90%); }
+
+.exercise-note-button[data-duration-name="Semibreve"] { background-color: #cfd8dc; color: #37474f; border-color: #b0bec5; }
+.exercise-note-button[data-duration-name="Minima"] { background-color: #b0bec5; color: #263238; border-color: #90a4ae; }
+.exercise-note-button[data-duration-name="Semiminima"] { background-color: #90a4ae; color: white; border-color: #78909c; }
+.exercise-note-button[data-duration-name="Croma"] { background-color: #78909c; color: white; border-color: #607d8b; }
+.exercise-note-button[data-duration-name="Semicroma"] { background-color: #607d8b; color: white; border-color: #546e7a; }
+.exercise-note-button[data-duration-name="Biscroma"] { background-color: #546e7a; color: white; border-color: #455a64; }
+.exercise-note-button[data-duration-name]:hover { filter: brightness(90%); }
+.exercise-note-button[data-duration-name]:active { filter: brightness(80%); }
+
+.exercise-note-button[data-interval-name-theory],
+.exercise-note-button[data-interval-name-exercise] {
+    background-color: #795548; color: white; border-color: #5d4037; min-width: 80px;
+}
+.exercise-note-button[data-interval-name-theory]:hover, .exercise-note-button[data-interval-name-exercise]:hover { filter: brightness(110%); }
+.exercise-note-button[data-interval-name-theory]:active, .exercise-note-button[data-interval-name-exercise]:active { filter: brightness(90%); }
+
+.exercise-note-button[data-alteration-symbol], .exercise-note-button[data-answer-option] {
+    background-color: #673ab7; color: white; min-width: 70px;
+}
+.exercise-note-button[data-alteration-symbol]:hover, .exercise-note-button[data-answer-option]:hover { filter: brightness(115%); }
+.exercise-note-button[data-alteration-symbol]:active, .exercise-note-button[data-answer-option]:active { filter: brightness(85%); }
+
+.exercise-note-button[data-triad-name-theory] { 
+    background-color: #3f51b5; 
     color: white;
-    border: none; border-radius: 5px; cursor: pointer;
-    font-size: 0.85em; min-width: 70px;
+    border: 1px solid #283593; 
+    min-width: 90px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15); 
+    font-weight: bold; 
 }
-.side-controls button:hover {
-    /* Hover pulsanti controlli laterali blu-grigio scuro */
-    background-color: #607d8b; /* Dark blue-gray */
+.exercise-note-button[data-triad-name-theory]:hover {
+    background-color: #303f9f; 
+    filter: none; 
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
 }
+.exercise-note-button[data-triad-name-theory]:active {
+    background-color: #283593; 
+    filter: none;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+#triad-exercise-buttons .exercise-note-button { /* Stile per pulsanti esercizio triadi */
+    background-color: #3f51b5; 
+    color: white;
+    border: 1px solid #283593; 
+    min-width: 90px; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15); 
+    font-weight: bold; 
+}
+#triad-exercise-buttons .exercise-note-button:hover {
+    background-color: #303f9f; 
+    filter: none; 
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+#triad-exercise-buttons .exercise-note-button:active {
+    background-color: #283593; 
+    filter: none;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* --- Stili Schermata Selezione Esercizi --- */
+#exercise-selection-container {
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+    margin-top: 40px; width: 100%; max-width: 600px; padding: 20px;
+    background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+#exercise-selection-container h2 { color: #3f51b5; margin-bottom: 10px; }
+.exercise-selection-button {
+    padding: 15px 30px; font-size: 1.2em; min-width: 250px; width: 80%; max-width: 350px;
+    cursor: pointer; border: none; border-radius: 8px; background-color: #4CAF50; 
+    color: white; transition: background-color 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.exercise-selection-button:hover { background-color: #45a049; }
+.exercise-selection-button:active { background-color: #3e8e41; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); }
+
+/* --- Stili Pulsanti Link Esterni Teoria --- */
+.external-link-button {
+    display: inline-block; padding: 10px 20px; margin-top: 15px; font-size: 1em;
+    font-weight: bold; color: white; background-color: #007bff; 
+    border: none; border-radius: 6px; text-decoration: none; cursor: pointer;
+    transition: background-color 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+.external-link-button:hover { background-color: #0056b3; color: white; }
+.external-link-button:active { background-color: #004085; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); }
+
+/* --- Footer Fisso --- */
+#piano-section-footer {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background-color: #b0bec5; box-shadow: 0 -4px 10px rgba(0,0,0,0.25);
+    z-index: 1000; display: flex; flex-direction: column; align-items: center;
+    padding: 10px 0; flex-shrink: 0;
+}
+#staff-above-keyboard { 
+    width: 90%; max-width: 950px; height: 170px; /* Altezza pentagramma home, REGOLA SE NECESSARIO */ 
+    background-color: #fff;
+    border: 2px solid #607d8b; border-radius: 8px; overflow: hidden;
+    margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+#vexflow-staff-output { width: 100%; height: 100%; }
+#vexflow-staff-output svg { display: block; width: 100% !important; height: 100% !important; }
+#keyboard-and-controls-wrapper {
+    display: flex; justify-content: center; align-items: center; width: auto; max-width: 100%;
+    padding: 8px 15px; background-color: #455a64; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+.side-controls { display: flex; flex-direction: column; align-items: center; padding: 0 10px; align-self: stretch; justify-content: center; }
+.side-controls button {
+    padding: 7px 10px; margin: 4px 0; background-color: #78909c; color: white;
+    border: none; border-radius: 5px; cursor: pointer; font-size: 0.85em; min-width: 70px;
+}
+.side-controls button:hover { background-color: #607d8b; }
 .side-controls .playback-btn { font-size: 1.1em; padding: 5px 8px; }
 
-/* Stili Tastiera (colori metallofono semi-trasparenti) */
+/* --- Stili Tastiera --- */
 .piano-container { display: flex; justify-content: center; }
-.piano {
-    position: relative; display: flex; padding: 6px;
-    background-color: #3a3a3a; /* Sfondo tastiera scuro */
-    border-radius: 5px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-    overflow-x: hidden; width: fit-content;
-}
-.key {
-    position: relative; box-sizing: border-box; cursor: pointer;
-    user-select: none; transition: background-color 0.08s ease-out;
-    flex-shrink: 0; display: flex; flex-direction: column;
-    justify-content: flex-end; align-items: center; text-align: center;
-}
-.key.white {
-    width: 45px; height: 150px;
-    background-color: rgba(255,255,255,0.8);
-    border: 1px solid rgba(0,0,0,0.1);
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px; margin-right: -1px; z-index: 1;
-    padding-bottom: 7px; font-size: 9px; font-weight: bold; color: #444;
-}
+.piano { position: relative; display: flex; padding: 6px; background-color: #3a3a3a; border-radius: 5px; box-shadow: 0 3px 10px rgba(0,0,0,0.3); overflow-x: hidden; width: fit-content; }
+.key { position: relative; box-sizing: border-box; cursor: pointer; user-select: none; transition: background-color 0.08s ease-out; flex-shrink: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; text-align: center; }
+.key.white { width: 45px; height: 150px; background-color: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.1); border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; margin-right: -1px; z-index: 1; padding-bottom: 7px; font-size: 9px; font-weight: bold; color: #000000; }
 .key.white:last-child { margin-right: 0; }
-
-.key.black {
-    position: absolute; top: 6px; width: 26px; height: 90px;
-    background-color: #2C2C2C;
-    border: 1px solid #1A1A1A;
-    border-top: none;
-    border-radius: 0 0 3px 3px;
-    z-index: 2;
-    box-shadow: inset 0 -2px 3px rgba(255,255,255,0.15), 0 2px 3px rgba(0,0,0,0.4);
-    color: #f0f0f0;
-    padding-top: 4px;
-}
-/* I VALORI 'left' PER I TASTI NERI NELL'HTML DEVONO CORRISPONDERE ALLA LARGHEZZA DEI TASTI BIANCHI */
-
+.key.black { position: absolute; top: 6px; width: 26px; height: 90px; background-color: #2C2C2C; border: 1px solid #1A1A1A; border-top: none; border-radius: 0 0 3px 3px; z-index: 2; box-shadow: inset 0 -2px 3px rgba(255,255,255,0.15), 0 2px 3px rgba(0,0,0,0.4); color: #f0f0f0; padding-top: 4px; }
 .key.black .note-name-black { font-size: 8px; font-weight: normal; display: none; }
 
-/* --- Colori semi-trasparenti per i Tasti Bianchi (MODIFICATO) --- */
-/* Valore alfa modificato da 0.4 a 0.48 per "aumentare luminosità" (minore trasparenza) */
-.key.white[data-note^="C"] { background-color: rgba(26, 35, 126, 0.48); }
-.key.white[data-note^="D"] { background-color: rgba(33, 150, 243, 0.48); }
-.key.white[data-note^="E"] { background-color: rgba(76, 175, 80, 0.48); }
-.key.white[data-note^="F"] { background-color: rgba(255, 235, 59, 0.48); }
-.key.white[data-note^="G"] { background-color: rgba(255, 152, 0, 0.48); }
-.key.white[data-note^="A"] { background-color: rgba(244, 67, 54, 0.48); }
-.key.white[data-note^="B"] { background-color: rgba(156, 39, 176, 0.48); }
+/* Colori Tasti Bianchi - Più Brillanti */
+.key.white[data-note^="C"] { background-color: rgba(26, 35, 126, 0.8); } 
+.key.white[data-note^="D"] { background-color: rgba(33, 150, 243, 0.8); } 
+.key.white[data-note^="E"] { background-color: rgba(76, 175, 80, 0.8); }  
+.key.white[data-note^="F"] { background-color: rgba(255, 235, 59, 0.8); }
+.key.white[data-note^="G"] { background-color: rgba(255, 152, 0, 0.8); }
+.key.white[data-note^="A"] { background-color: rgba(244, 67, 54, 0.8); }  
+.key.white[data-note^="B"] { background-color: rgba(156, 39, 176, 0.8); }
 
-
-/* Colori tasti quando premuti (mantenuti standard per feedback) */
+/* Tasti Premuti */
 .key.white:active, .key.white.playing { background-color: #cceeff; box-shadow: inset 0 0 5px rgba(0,100,200,0.4); }
-.key.black:active, .key.black.playing {
-    background-color: #506070;
-    border-color: #405060;
-    box-shadow: inset 0 -2px 3px rgba(255,255,255,0.1), 0 2px 3px rgba(0,0,0,0.6);
+.key.black:active, .key.black.playing { background-color: #506070; border-color: #405060; box-shadow: inset 0 -2px 3px rgba(255,255,255,0.1), 0 2px 3px rgba(0,0,0,0.6); }
+
+/* NUOVA CLASSE per "nascondere" i tasti extra */
+.key.key-is-hidden {
+    background-color: #333232 !important; 
+    color: #333232 !important; 
+    border-color: #2a2a2a !important;
+    box-shadow: inset 0 -1px 2px rgba(0,0,0,0.5) !important; 
+}
+.key.key-is-hidden .note-name-black { 
+    display: none !important;
 }
 
-/* Nascondi i nomi delle note sulla tastiera se la classe è presente */
+/* Nascondi Nomi Tasti (vecchia funzionalità, ora commentata) */
+/*
 .piano-container .hide-all-note-names .key .note-name-black,
-.piano-container .hide-all-note-names .key.white {
-    color: transparent !important;
-    text-shadow: none !important;
-}
-.piano-container .hide-all-note-names .key.white {
-     color: rgba(68, 68, 68, 0.3) !important;
-}
+.piano-container .hide-all-note-names .key.white { color: transparent !important; text-shadow: none !important; }
+.piano-container .hide-all-note-names .key.white { color: rgba(68, 68, 68, 0.3) !important; }
+*/
