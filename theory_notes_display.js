@@ -73,13 +73,13 @@ export function setupTheoryUI(containerElementOrId) {
     linkContainer.style.marginTop = '25px';
     linkContainer.style.textAlign = 'center';
     const linkButton = document.createElement('a');
-    linkButton.href = "https://www.google.com"; // <-- SOSTITUISCI CON URL REALE CAPITOLO 1
+    linkButton.href = "https://www.pianohitech.com/capitoli-1-cildren"; // <-- LINK AGGIORNATO QUI
     linkButton.target = "_blank";
     linkButton.classList.add('external-link-button');
     linkButton.textContent = 'Teoria Capitolo 1';
     linkContainer.appendChild(linkButton);
     theorySectionDiv.appendChild(linkContainer);
-    console.log(">>> THEORY: Pulsante link 'Capitolo 1' aggiunto.");
+    console.log(">>> THEORY: Pulsante link 'Capitolo 1' aggiunto con nuovo URL.");
 
     // Aggiunge l'intera sezione al container fornito da main.js
     container.appendChild(theorySectionDiv);

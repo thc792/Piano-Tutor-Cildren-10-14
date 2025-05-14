@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Piano App per Bambini - Debug Loading</title>
+    <title>Piano App per Bambini</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header id="main-header">
         <nav id="top-navigation">
+            <button id="btn-home" class="nav-button">Home</button>
             <button id="btn-teoria-musicale" class="nav-button">Teoria Musicale</button>
             <button id="btn-esercizi-teorici" class="nav-button">Esercizi di Teoria</button>
-            <!-- Altri pulsanti di navigazione principali -->
+            <button id="btn-verifica" class="nav-button">Esercizi Verifica</button>
         </nav>
         <div id="global-controls">
             <button id="toggle-staff-note-names-btn" class="utility-btn">Note Scritte (Pentagramma) On/Off</button>
@@ -20,22 +21,23 @@
         </div>
     </header>
 
-    <main id="content-area">
-        <div id="main-tv-screens-container">
-            <div class="main-tv-screen" id="center-main-tv">
-                <div class="main-tv-screen-content">
-                    <h2>Piano Tutor cildren</h2>
-                    <p>Benvenuti su piano tutor cildren </p>
-             
-                </div>
+    <div id="main-tv-screens-container">
+        <div class="main-tv-screen" id="center-main-tv">
+            <div class="main-tv-screen-content">
+                <h2>Piano Tutor cildren</h2>
+                <p>Benvenuti su piano tutor cildren</p>
             </div>
         </div>
+    </div>
+
+    <main id="content-area">
+        <!-- Contenuto dinamico -->
     </main>
 
     <footer id="piano-section-footer">
         <div id="staff-above-keyboard">
             <div id="vexflow-staff-output">
-                <!-- VexFlow disegnerà il pentagramma qui -->
+                <!-- VexFlow home staff -->
             </div>
         </div>
 
@@ -65,7 +67,7 @@
                     <div class="key white" data-midi="79" data-note="G5" data-note-name="Sol">G5</div>
                     <div class="key white" data-midi="81" data-note="A5" data-note-name="La">A5</div>
 
-                    <!-- TASTI NERI (A#3-G#5) - POSIZIONI AGGIUSTATE PER IL NUOVO INIZIO (A3) -->
+                    <!-- TASTI NERI (A#3-G#5) -->
                     <div class="key black" data-midi="58" data-note="A#3" data-note-name="La#" style="left: calc(1 * 45px - 13px);"><span class="note-name-black">La#3</span></div>
                     <div class="key black" data-midi="61" data-note="C#4" data-note-name="Do#" style="left: calc(3 * 45px - 13px);"><span class="note-name-black">Do#4</span></div>
                     <div class="key black" data-midi="63" data-note="D#4" data-note-name="Re#" style="left: calc(4 * 45px - 13px);"><span class="note-name-black">Re#4</span></div>
@@ -83,13 +85,26 @@
             </div>
         </div>
     </footer>
-    <!-- Carica prima VexFlow dalla CDN -->
+
     <script src="https://cdn.jsdelivr.net/npm/vexflow@4.2.3/build/cjs/vexflow.js"></script>
-    <!-- Carica poi i tuoi script principali (come moduli) -->
+
     <script type="module" src="vexflow_renderer.js"></script>
     <script type="module" src="main.js"></script>
     <script type="module" src="midi_handler.js"></script>
+    <script type="module" src="audio_handler.js"></script>
+    <script type="module" src="verification_exercise.js"></script> <!-- Percorso corretto se nella root -->
+    
     <script type="module" src="theory_notes_display.js"></script>
     <script type="module" src="quiz_exercise.js"></script>
+    
+    <script type="module" src="./teoria/teoriaspiegazionedurate.js"></script>
+    <script type="module" src="./exercises/eserciziodurate.js"></script>
+    <script type="module" src="./teoria/teoriaintervalli.js"></script>
+    <script type="module" src="./exercises/eserciziointervalli.js"></script>
+    <script type="module" src="./teoria/teoriaalterazioni.js"></script>
+    <script type="module" src="./exercises/esercizioalterazioni.js"></script>
+    <script type="module" src="./teoria/teoriatriadi.js"></script>
+    <script type="module" src="./exercises/eserciziotriadi.js"></script>
+
 </body>
 </html>

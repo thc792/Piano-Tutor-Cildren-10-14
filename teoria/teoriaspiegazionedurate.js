@@ -95,7 +95,7 @@ export function setupDurationTheoryUI(containerElementOrId) {
     linkContainer.style.marginTop = '25px';
     linkContainer.style.textAlign = 'center';
     const linkButton = document.createElement('a');
-    linkButton.href = "https://www.google.com"; 
+    linkButton.href = "https://www.pianohitech.com/capitoli-2-cildren"; 
     linkButton.target = "_blank";
     linkButton.classList.add('external-link-button');
     linkButton.textContent = 'Teoria Capitolo 2';
