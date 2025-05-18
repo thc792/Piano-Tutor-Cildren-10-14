@@ -1,6 +1,18 @@
 /**
- * js/main.js
- * Logica principale dell'applicazione Piano App per Bambini.
+ * Piano Tutor cildren 
+ * Copyright (c) 2023-2024 Lorenzetti Giuseppe (aggiorna l'anno se necessario)
+ *
+ * Tutti i diritti riservati.
+ *
+ * Questo software è proprietario e confidenziale.
+ * È concesso in licenza, non venduto. L'uso, la riproduzione, la modifica
+ * o la distribuzione non autorizzata di questo software, o di qualsiasi sua parte,
+ * sono severamente vietati.
+ *
+ * Per informazioni sulla licenza e per i termini di utilizzo completi,
+ * fare riferimento al file LICENSE.md disponibile nel repository del progetto:
+ * https:https://github.com/thc792/Pianotutorcildren/blob/main/LICENSE.md]
+ * o contattare [pianothc791@gmail.com].
  */
 
 // Import VexFlow Renderer

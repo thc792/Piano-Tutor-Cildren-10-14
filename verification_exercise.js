@@ -1,3 +1,22 @@
+/**
+ * Piano Tutor cildren 
+ * Copyright (c) 2023-2024 Lorenzetti Giuseppe (aggiorna l'anno se necessario)
+ *
+ * Tutti i diritti riservati.
+ *
+ * Questo software è proprietario e confidenziale.
+ * È concesso in licenza, non venduto. L'uso, la riproduzione, la modifica
+ * o la distribuzione non autorizzata di questo software, o di qualsiasi sua parte,
+ * sono severamente vietati.
+ *
+ * Per informazioni sulla licenza e per i termini di utilizzo completi,
+ * fare riferimento al file LICENSE.md disponibile nel repository del progetto:
+ * https:https://github.com/thc792/Pianotutorcildren/blob/main/LICENSE.md]
+ * o contattare [pianothc791@gmail.com].
+ */
+
+
+
 // js/verification_exercise.js
 import { renderExercise, renderEmptyStaff } from './vexflow_renderer.js';
 import { playNoteSound, vexFlowToMidi } from './audio_handler.js';

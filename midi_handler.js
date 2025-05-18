@@ -3,12 +3,20 @@
  * Gestore per l'input MIDI Web API
  * **VERSIONE CON AGGIUNTA FORZATA DEL LISTENER in updateDevices**
  *
- * Piano App per Bambini
- * Basato su codice di Piano Future di Lorenzetti Giuseppe (con modifiche)
+   * Piano Tutor cildren 
+ * Copyright (c) 2023-2024 Lorenzetti Giuseppe (aggiorna l'anno se necessario)
  *
- * Questo codice sorgente è rilasciato sotto la licenza MIT.
- * Vedi il file LICENSE nel repository GitHub per i dettagli completi.
- * https://github.com/thc792/piano-tutor-extraime/blob/main/LICENSE
+ * Tutti i diritti riservati.
+ *
+ * Questo software è proprietario e confidenziale.
+ * È concesso in licenza, non venduto. L'uso, la riproduzione, la modifica
+ * o la distribuzione non autorizzata di questo software, o di qualsiasi sua parte,
+ * sono severamente vietati.
+ *
+ * Per informazioni sulla licenza e per i termini di utilizzo completi,
+ * fare riferimento al file LICENSE.md disponibile nel repository del progetto:
+ * https:https://github.com/thc792/Pianotutorcildren/blob/main/LICENSE.md]
+ * o contattare [pianothc791@gmail.com].
  */
 
 // RIGA 7: QUESTA DEVE ESSERE LA RIGA 7. Non deve essere un import.
