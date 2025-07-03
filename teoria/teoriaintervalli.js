@@ -104,7 +104,7 @@ export function setupIntervalTheoryUI(containerElementOrId) {
     linkContainer.style.marginTop = '25px';
     linkContainer.style.textAlign = 'center';
     const linkButton = document.createElement('a');
-    linkButton.href = "#"; // <-- SOSTITUISCI CON URL REALE CAPITOLO 3
+    linkButton.href = "https://www.pianohitech.com/capitoli-3-cildren"; // <-- SOSTITUISCI CON URL REALE CAPITOLO 3
     linkButton.target = "_blank";
     linkButton.classList.add('external-link-button');
     linkButton.textContent = 'Teoria Capitolo 3';

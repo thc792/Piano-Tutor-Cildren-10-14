@@ -118,7 +118,7 @@ export function setupAlterationTheoryUI(containerElementOrId) {
     const linkContainer = document.createElement('div');
     linkContainer.style.marginTop = '25px'; linkContainer.style.textAlign = 'center';
     const linkButton = document.createElement('a');
-    linkButton.href = "#"; // <-- SOSTITUISCI CON URL REALE CAPITOLO 4
+    linkButton.href = "https://www.pianohitech.com/capitoli-4-cildren"; // <-- SOSTITUISCI CON URL REALE CAPITOLO 4
     linkButton.target = "_blank"; linkButton.classList.add('external-link-button');
     linkButton.textContent = 'Teoria Capitolo 4';
     linkContainer.appendChild(linkButton);
