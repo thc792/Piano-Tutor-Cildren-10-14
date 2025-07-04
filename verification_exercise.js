@@ -1,6 +1,6 @@
 /**
  * Piano Tutor cildren 
- * Copyright (c) 2023-2024 Lorenzetti Giuseppe (aggiorna l'anno se necessario)
+ * Copyright (c) 2023-2024 Lorenzetti Giuseppe
  *
  * Tutti i diritti riservati.
  *
@@ -24,13 +24,10 @@ import { playNoteSound, vexFlowToMidi } from './audio_handler.js';
 // --- STRUTTURA DATI ESERCIZI ---
 const EXERCISE_CATEGORIES = [
     {
-        name: "Scale e Arpeggi",
+        name: "Scale Maggiori",
         exercises: [
             {
-                name: "Scala Do M (Violino)",
-                layout: "single", // O ometti se 'single' è il default implicito
-                clef: "treble",
-                keySignature: "C",
+                name: "Scala di Do Maggiore", layout: "single", clef: "treble", keySignature: "C",
                 notes: [
                     { keys: ["c/4"], duration: "q" }, { keys: ["d/4"], duration: "q" },
                     { keys: ["e/4"], duration: "q" }, { keys: ["f/4"], duration: "q" },
@@ -39,53 +36,156 @@ const EXERCISE_CATEGORIES = [
                 ]
             },
             {
-                name: "Scala Fa M (Basso)",
-                layout: "single",
-                clef: "bass",
-                keySignature: "F",
+                name: "Scala di Sol Maggiore", layout: "single", clef: "treble", keySignature: "G",
                 notes: [
-                    { keys: ["f/2"], duration: "q" }, { keys: ["g/2"], duration: "q" },
-                    { keys: ["a/2"], duration: "q" }, { keys: ["bb/2"], duration: "q" },
-                    { keys: ["c/3"], duration: "q" }, { keys: ["d/3"], duration: "q" },
-                    { keys: ["e/3"], duration: "q" }, { keys: ["f/3"], duration: "q" }
+                    { keys: ["g/4"], duration: "q" }, { keys: ["a/4"], duration: "q" },
+                    { keys: ["b/4"], duration: "q" }, { keys: ["c/5"], duration: "q" },
+                    { keys: ["d/5"], duration: "q" }, { keys: ["e/5"], duration: "q" },
+                    { keys: ["f#/5"], duration: "q" }, { keys: ["g/5"], duration: "q" }
                 ]
             },
             {
-                name: "Do M - Mani Separate (Grand Staff)",
-                layout: "grand", // INDICA GRAND STAFF
-                keySignature: "C",
-                // clef non è necessario qui se layout è "grand", VexFlow lo gestirà
-                notesTreble: [
-                    { keys: ["e/5"], duration: "h" }, { keys: ["d/5"], duration: "h" },
-                    { keys: ["c/5"], duration: "q" }, { keys: ["b/4"], duration: "q" }, { keys: ["a/4"], duration: "q" }
-                ],
-                notesBass: [
-                    { keys: ["c/3"], duration: "h" }, { keys: ["e/3"], duration: "h" },
-                    { keys: ["g/3"], duration: "q" }, { keys: ["f/3"], duration: "q" }, { keys: ["e/3"], duration: "q" }
+                name: "Scala di Re Maggiore", layout: "single", clef: "treble", keySignature: "D",
+                notes: [
+                    { keys: ["d/4"], duration: "q" }, { keys: ["e/4"], duration: "q" },
+                    { keys: ["f#/4"], duration: "q" }, { keys: ["g/4"], duration: "q" },
+                    { keys: ["a/4"], duration: "q" }, { keys: ["b/4"], duration: "q" },
+                    { keys: ["c#/5"], duration: "q" }, { keys: ["d/5"], duration: "q" }
                 ]
             },
-            // Aggiungi altri esercizi qui
+            {
+                name: "Scala di La Maggiore", layout: "single", clef: "treble", keySignature: "A",
+                notes: [
+                    { keys: ["a/4"], duration: "q" }, { keys: ["b/4"], duration: "q" },
+                    { keys: ["c#/5"], duration: "q" }, { keys: ["d/5"], duration: "q" },
+                    { keys: ["e/5"], duration: "q" }, { keys: ["f#/5"], duration: "q" },
+                    { keys: ["g#/5"], duration: "q" }, { keys: ["a/5"], duration: "q" }
+                ]
+            },
+            {
+                name: "Scala di Mi Maggiore", layout: "single", clef: "treble", keySignature: "E",
+                notes: [
+                    { keys: ["e/4"], duration: "q" }, { keys: ["f#/4"], duration: "q" },
+                    { keys: ["g#/4"], duration: "q" }, { keys: ["a/4"], duration: "q" },
+                    { keys: ["b/4"], duration: "q" }, { keys: ["c#/5"], duration: "q" },
+                    { keys: ["d#/5"], duration: "q" }, { keys: ["e/5"], duration: "q" }
+                ]
+            },
+            {
+                name: "Scala di Si Maggiore", layout: "single", clef: "treble", keySignature: "B",
+                notes: [
+                    { keys: ["b/3"], duration: "q" }, { keys: ["c#/4"], duration: "q" },
+                    { keys: ["d#/4"], duration: "q" }, { keys: ["e/4"], duration: "q" },
+                    { keys: ["f#/4"], duration: "q" }, { keys: ["g#/4"], duration: "q" },
+                    { keys: ["a#/4"], duration: "q" }, { keys: ["b/4"], duration: "q" }
+                ]
+            },
+            {
+                name: "Scala di Fa Maggiore", layout: "single", clef: "treble", keySignature: "F",
+                notes: [
+                    { keys: ["f/4"], duration: "q" }, { keys: ["g/4"], duration: "q" },
+                    { keys: ["a/4"], duration: "q" }, { keys: ["bb/4"], duration: "q" },
+                    { keys: ["c/5"], duration: "q" }, { keys: ["d/5"], duration: "q" },
+                    { keys: ["e/5"], duration: "q" }, { keys: ["f/5"], duration: "q" }
+                ]
+            }
+        ]
+    },
+    {
+        name: "Scale Minori",
+        exercises: [
+            {
+                name: "Scala di La Minore Naturale", layout: "single", clef: "treble", keySignature: "Am",
+                notes: [
+                    { keys: ["a/4"], duration: "q" }, { keys: ["b/4"], duration: "q" },
+                    { keys: ["c/5"], duration: "q" }, { keys: ["d/5"], duration: "q" },
+                    { keys: ["e/5"], duration: "q" }, { keys: ["f/5"], duration: "q" },
+                    { keys: ["g/5"], duration: "q" }, { keys: ["a/5"], duration: "q" }
+                ]
+            },
+            {
+                name: "Scala di Mi Minore Naturale", layout: "single", clef: "treble", keySignature: "Em",
+                notes: [
+                    { keys: ["e/4"], duration: "q" }, { keys: ["f#/4"], duration: "q" },
+                    { keys: ["g/4"], duration: "q" }, { keys: ["a/4"], duration: "q" },
+                    { keys: ["b/4"], duration: "q" }, { keys: ["c/5"], duration: "q" },
+                    { keys: ["d/5"], duration: "q" }, { keys: ["e/5"], duration: "q" }
+                ]
+            },
+            {
+                name: "Scala di Si Minore Naturale", layout: "single", clef: "treble", keySignature: "Bm",
+                notes: [
+                    { keys: ["b/3"], duration: "q" }, { keys: ["c#/4"], duration: "q" },
+                    { keys: ["d/4"], duration: "q" }, { keys: ["e/4"], duration: "q" },
+                    { keys: ["f#/4"], duration: "q" }, { keys: ["g/4"], duration: "q" },
+                    { keys: ["a/4"], duration: "q" }, { keys: ["b/4"], duration: "q" }
+                ]
+            },
+            {
+                name: "Scala di Fa# Minore Naturale", layout: "single", clef: "treble", keySignature: "F#m",
+                notes: [
+                    { keys: ["f#/4"], duration: "q" }, { keys: ["g#/4"], duration: "q" },
+                    { keys: ["a/4"], duration: "q" }, { keys: ["b/4"], duration: "q" },
+                    { keys: ["c#/5"], duration: "q" }, { keys: ["d/5"], duration: "q" },
+                    { keys: ["e/5"], duration: "q" }, { keys: ["f#/5"], duration: "q" }
+                ]
+            },
+            {
+                name: "Scala di Do# Minore Naturale", layout: "single", clef: "treble", keySignature: "C#m",
+                notes: [
+                    { keys: ["c#/4"], duration: "q" }, { keys: ["d#/4"], duration: "q" },
+                    { keys: ["e/4"], duration: "q" }, { keys: ["f#/4"], duration: "q" },
+                    { keys: ["g#/4"], duration: "q" }, { keys: ["a/4"], duration: "q" },
+                    { keys: ["b/4"], duration: "q" }, { keys: ["c#/5"], duration: "q" }
+                ]
+            },
+            {
+                name: "Scala di Sol Minore Naturale", layout: "single", clef: "treble", keySignature: "Gm",
+                notes: [
+                    { keys: ["g/4"], duration: "q" }, { keys: ["a/4"], duration: "q" },
+                    { keys: ["bb/4"], duration: "q" }, { keys: ["c/5"], duration: "q" },
+                    { keys: ["d/5"], duration: "q" }, { keys: ["eb/5"], duration: "q" },
+                    { keys: ["f/5"], duration: "q" }, { keys: ["g/5"], duration: "q" }
+                ]
+            },
+             {
+                name: "Scala di Re Minore Naturale", layout: "single", clef: "treble", keySignature: "Dm",
+                notes: [
+                    { keys: ["d/4"], duration: "q" }, { keys: ["e/4"], duration: "q" },
+                    { keys: ["f/4"], duration: "q" }, { keys: ["g/4"], duration: "q" },
+                    { keys: ["a/4"], duration: "q" }, { keys: ["bb/4"], duration: "q" },
+                    { keys: ["c/5"], duration: "q" }, { keys: ["d/5"], duration: "q" }
+                ]
+            }
         ]
     },
     {
         name: "Accordi",
         exercises: [
-            {
-                name: "Accordo Do M (Violino)",
-                layout: "single", clef: "treble", keySignature: "C",
-                notes: [ { keys: ["c/4", "e/4", "g/4"], duration: "w" }]
-            },
-            {
-                name: "Accordo Fa M (Basso)",
-                layout: "single", clef: "bass", keySignature: "F",
-                notes: [ { keys: ["f/2", "a/2", "c/3"], duration: "w" }]
-            },
-            {
-                name: "Accordo Do M (Grand Staff)",
-                layout: "grand", keySignature: "C",
-                notesTreble: [ { keys: ["g/4", "c/5", "e/5"], duration: "w" } ],
-                notesBass:   [ { keys: ["c/3", "e/3", "g/3"], duration: "w" } ]
-            }
+            // Accordi Maggiori
+            { name: "Accordo di Do Maggiore", layout: "single", clef: "treble", keySignature: "C", notes: [{ keys: ["c/4", "e/4", "g/4"], duration: "w" }] },
+            { name: "Accordo di Sol Maggiore", layout: "single", clef: "treble", keySignature: "G", notes: [{ keys: ["g/4", "b/4", "d/5"], duration: "w" }] },
+            { name: "Accordo di Re Maggiore", layout: "single", clef: "treble", keySignature: "D", notes: [{ keys: ["d/4", "f#/4", "a/4"], duration: "w" }] },
+            { name: "Accordo di La Maggiore", layout: "single", clef: "treble", keySignature: "A", notes: [{ keys: ["a/4", "c#/5", "e/5"], duration: "w" }] },
+            { name: "Accordo di Mi Maggiore", layout: "single", clef: "treble", keySignature: "E", notes: [{ keys: ["e/4", "g#/4", "b/4"], duration: "w" }] },
+            { name: "Accordo di Si Maggiore", layout: "single", clef: "treble", keySignature: "B", notes: [{ keys: ["b/3", "d#/4", "f#/4"], duration: "w" }] },
+            { name: "Accordo di Fa Maggiore", layout: "single", clef: "treble", keySignature: "F", notes: [{ keys: ["f/4", "a/4", "c/5"], duration: "w" }] },
+            // Accordi Minori
+            { name: "Accordo di Do Minore", layout: "single", clef: "treble", keySignature: "Cm", notes: [{ keys: ["c/4", "eb/4", "g/4"], duration: "w" }] },
+            { name: "Accordo di Sol Minore", layout: "single", clef: "treble", keySignature: "Gm", notes: [{ keys: ["g/4", "bb/4", "d/5"], duration: "w" }] },
+            { name: "Accordo di Re Minore", layout: "single", clef: "treble", keySignature: "Dm", notes: [{ keys: ["d/4", "f/4", "a/4"], duration: "w" }] },
+            { name: "Accordo di La Minore", layout: "single", clef: "treble", keySignature: "Am", notes: [{ keys: ["a/4", "c/5", "e/5"], duration: "w" }] },
+            { name: "Accordo di Mi Minore", layout: "single", clef: "treble", keySignature: "Em", notes: [{ keys: ["e/4", "g/4", "b/4"], duration: "w" }] },
+            { name: "Accordo di Si Minore", layout: "single", clef: "treble", keySignature: "Bm", notes: [{ keys: ["b/3", "d/4", "f#/4"], duration: "w" }] },
+            { name: "Accordo di Fa Minore", layout: "single", clef: "treble", keySignature: "Fm", notes: [{ keys: ["f/4", "ab/4", "c/5"], duration: "w" }] },
+            // Accordi di Settima di Dominante
+            { name: "Accordo di Do7", layout: "single", clef: "treble", keySignature: "C", notes: [{ keys: ["c/4", "e/4", "g/4", "bb/4"], duration: "w" }] },
+            { name: "Accordo di Sol7", layout: "single", clef: "treble", keySignature: "G", notes: [{ keys: ["g/4", "b/4", "d/5", "f/5"], duration: "w" }] },
+            { name: "Accordo di Re7", layout: "single", clef: "treble", keySignature: "D", notes: [{ keys: ["d/4", "f#/4", "a/4", "c/5"], duration: "w" }] },
+            { name: "Accordo di La7", layout: "single", clef: "treble", keySignature: "A", notes: [{ keys: ["a/3", "c#/4", "e/4", "g/4"], duration: "w" }] },
+            { name: "Accordo di Mi7", layout: "single", clef: "treble", keySignature: "E", notes: [{ keys: ["e/4", "g#/4", "b/4", "d/5"], duration: "w" }] },
+            { name: "Accordo di Si7", layout: "single", clef: "treble", keySignature: "B", notes: [{ keys: ["b/3", "d#/4", "f#/4", "a/4"], duration: "w" }] },
+            { name: "Accordo di Fa7", layout: "single", clef: "treble", keySignature: "F", notes: [{ keys: ["f/4", "a/4", "c/5", "eb/5"], duration: "w" }] }
         ]
     }
 ];
