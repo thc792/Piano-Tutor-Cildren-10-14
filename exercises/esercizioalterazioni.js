@@ -9,8 +9,6 @@ import { renderExercise } from '../vexflow_renderer.js'; // o percorso corretto
 // --- Costanti e Dati del Modulo ---
 const EXERCISE_LENGTH = 10; // Numero di domande per questo esercizio
 
-// Esempio di come potrebbero essere strutturate le domande.
-// DEVI implementare la logica in generateExerciseQuestions per popolarlo correttamente.
 const ALL_POSSIBLE_NOTES_WITH_ALTERATIONS = [
     { noteToDisplayKey: 'f/4', correctAnswerName: 'Fa', answerOptions: ['Fa', 'Fa#', 'Fab'] },
     { noteToDisplayKey: 'f#/4', correctAnswerName: 'Fa#', answerOptions: ['Fa', 'Fa#', 'Fab'] },
@@ -22,7 +20,6 @@ const ALL_POSSIBLE_NOTES_WITH_ALTERATIONS = [
     { noteToDisplayKey: 'g#/4', correctAnswerName: 'Sol#', answerOptions: ['Sol', 'Sol#', 'Solb'] },
     { noteToDisplayKey: 'gb/4', correctAnswerName: 'Solb', answerOptions: ['Sol', 'Sol#', 'Solb'] },
     // Aggiungi altre note e le loro alterazioni comuni con le relative opzioni di risposta
-    // Le answerOptions dovrebbero includere la risposta corretta e alcuni distrattori plausibili.
 ];
 
 
@@ -41,18 +38,15 @@ let exerciseInputButtonsId = 'alteration-exercise-buttons';
 
 function generateExerciseQuestions() {
     exerciseQuestions = [];
-    const availableQuestions = [...ALL_POSSIBLE_NOTES_WITH_ALTERATIONS]; // Copia per poterla modificare
+    const availableQuestions = [...ALL_POSSIBLE_NOTES_WITH_ALTERATIONS]; 
 
     for (let i = 0; i < EXERCISE_LENGTH; i++) {
         if (availableQuestions.length === 0) {
-            // Se finiamo le domande uniche prima di raggiungere EXERCISE_LENGTH,
-            // potremmo ricominciare a pescare o fermarci. Per ora, duplichiamo.
-            // Per una migliore esperienza, ALL_POSSIBLE_NOTES_WITH_ALTERATIONS dovrebbe avere almeno EXERCISE_LENGTH elementi unici.
             const randomIndex = Math.floor(Math.random() * ALL_POSSIBLE_NOTES_WITH_ALTERATIONS.length);
             exerciseQuestions.push(ALL_POSSIBLE_NOTES_WITH_ALTERATIONS[randomIndex]);
         } else {
             const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-            exerciseQuestions.push(availableQuestions.splice(randomIndex, 1)[0]); // Prende e rimuove per evitare duplicati diretti
+            exerciseQuestions.push(availableQuestions.splice(randomIndex, 1)[0]);
         }
     }
     console.log(">>> ESERCIZIO ALTERAZIONI: Domande generate:", exerciseQuestions.map(q => q.noteToDisplayKey));
@@ -68,8 +62,7 @@ function displayCurrentQuestion() {
     const question = exerciseQuestions[currentQuestionIndex];
     if (!question) {
         console.error(">>> ESERCIZIO ALTERAZIONI: Domanda non definita per l'indice corrente:", currentQuestionIndex);
-        // Potrebbe essere utile mostrare un messaggio di errore o terminare l'esercizio qui
-        showFinalScore(); // Termina l'esercizio se la domanda non è valida
+        showFinalScore();
         return;
     }
 
@@ -78,12 +71,11 @@ function displayCurrentQuestion() {
     const exerciseDataForVexFlow = {
         clef: 'treble', 
         timeSignature: null,
-        keySignature: null, 
-        notes: [{ keys: [question.noteToDisplayKey], duration: 'q', status: 'default' }]
+        keySignature: 'C', // Usiamo C per non avere alterazioni in chiave e vedere solo quella della nota
+        notes: [{ keys: [question.noteToDisplayKey], duration: 'w', status: 'default' }]
     };
     const vexflowOptions = { 
         showTextAnnotations: false,
-        // customStartY: 0 // Esempio se vuoi un Y specifico per questo esercizio
     };
 
     try {
@@ -96,16 +88,19 @@ function displayCurrentQuestion() {
 
     updateFeedback(`Domanda ${currentQuestionIndex + 1} di ${EXERCISE_LENGTH}. Identifica la nota.`);
     
-    // Aggiorna i pulsanti di risposta per la domanda corrente
-    // Questo presuppone che tu abbia una funzione in main.js per creare/aggiornare i pulsanti
-    // e che getAlterationExerciseButtonOptions() restituisca le opzioni per la domanda corrente.
+    // Il codice originale per i pulsanti è stato rimosso in una versione precedente,
+    // La logica di creazione pulsanti ora è meglio gestirla dinamicamente
     const buttonsContainer = document.getElementById(exerciseInputButtonsId);
-    if (buttonsContainer && typeof window.addInputButtons === 'function') { // Assumendo che addInputButtons sia globale o importata
-        const buttonOptions = getAlterationExerciseButtonOptions(); // Prende le opzioni per la domanda corrente
-        window.addInputButtons(exerciseInputButtonsId, buttonOptions.map(opt => opt.name), 'alteration_exercise_option');
-                                                                    // Passa un tipo specifico per i listener
-    } else {
-        console.warn(">>> ESERCIZIO ALTERAZIONI: Contenitore pulsanti o addInputButtons non trovato/configurato per aggiornamento dinamico.");
+    if(buttonsContainer) {
+        buttonsContainer.innerHTML = ''; // Pulisci vecchi pulsanti
+        const currentOptions = question.answerOptions || [];
+        currentOptions.forEach(optionName => {
+            const button = document.createElement('button');
+            button.textContent = optionName;
+            button.classList.add('exercise-note-button');
+            button.addEventListener('click', () => processAlterationExerciseInput(optionName));
+            buttonsContainer.appendChild(button);
+        });
     }
 }
 
@@ -113,7 +108,7 @@ function updateFeedback(message, color = '#333') {
     if (!exerciseFeedbackId) { console.error(">>> ESERCIZIO ALTERAZIONI: exerciseFeedbackId non trovato!"); return; }
     const feedbackDiv = document.getElementById(exerciseFeedbackId);
     if (feedbackDiv) {
-        feedbackDiv.innerHTML = ''; // Pulisci prima, per permettere HTML nel messaggio finale
+        feedbackDiv.innerHTML = '';
         const p = document.createElement('p');
         p.textContent = message;
         p.style.color = color;
@@ -131,18 +126,13 @@ function showFinalScore() {
     finalMessageHTML += `<p>Risposte Errate: ${wrongAnswersCount}</p>`;
     finalMessageHTML += `<p>Tempo Impiegato: ${elapsedTimeSeconds} secondi</p>`;
     
-    // finalMessageHTML += `<button id="btn-restart-alteration-exercise" class="exercise-selection-button" style="margin-top:15px;">Ricomincia Esercizio</button>`;
-
     const feedbackDiv = document.getElementById(exerciseFeedbackId);
     if (feedbackDiv) {
         feedbackDiv.innerHTML = finalMessageHTML; 
-        // Non impostare feedbackDiv.style.color qui, perché i tag h3/p hanno i loro stili.
-        // Se vuoi colorare tutto il blocco, puoi farlo, ma di solito il colore è per messaggi temporanei.
     }
-    // Nascondi i pulsanti di risposta
     const buttonsContainer = document.getElementById(exerciseInputButtonsId);
     if (buttonsContainer) {
-        buttonsContainer.innerHTML = ''; // Pulisce i pulsanti di risposta
+        buttonsContainer.innerHTML = '';
     }
     console.log(">>> ESERCIZIO ALTERAZIONI: Completato!", { correct: correctAnswersCount, wrong: wrongAnswersCount, total: EXERCISE_LENGTH, time: elapsedTimeSeconds });
 }
@@ -172,19 +162,15 @@ export function startAlterationExercise() {
     currentQuestionIndex = 0;
     correctAnswersCount = 0;      
     exerciseStartTime = Date.now(); 
-    generateExerciseQuestions(); // Genera le domande
+    generateExerciseQuestions(); 
     if (exerciseQuestions.length > 0) {
-        displayCurrentQuestion(); // Mostra la prima domanda e i suoi pulsanti di risposta
+        displayCurrentQuestion();
     } else {
         updateFeedback("Nessuna domanda generata per l'esercizio.", "red");
         console.error(">>> ESERCIZIO ALTERAZIONI: Nessuna domanda generata.");
     }
-    // In main.js, quando si entra in questa sezione, activeInputHandler sarà impostato su processAlterationExerciseInput
-    // Questo è per l'input da tastiera MIDI, se lo usi per rispondere.
-    // I click sui pulsanti di risposta generati da displayCurrentQuestion chiameranno direttamente processAlterationExerciseInput.
 }
 
-// selectedAnswer qui è il NOME della nota cliccata (es. "Fa#")
 export function processAlterationExerciseInput(selectedAnswerName) { 
     console.log(`>>> ESERCIZIO ALTERAZIONI: processAlterationExerciseInput con: ${selectedAnswerName}`);
     if (currentQuestionIndex >= EXERCISE_LENGTH) {
@@ -195,7 +181,7 @@ export function processAlterationExerciseInput(selectedAnswerName) {
     const question = exerciseQuestions[currentQuestionIndex];
     if (!question) {
         console.error(">>> ESERCIZIO ALTERAZIONI: Domanda corrente non valida in processInput.");
-        showFinalScore(); // Termina se c'è un problema con le domande
+        showFinalScore(); 
         return;
     }
     const correctAnswerName = question.correctAnswerName; 
@@ -211,7 +197,7 @@ export function processAlterationExerciseInput(selectedAnswerName) {
 
     if (currentQuestionIndex < EXERCISE_LENGTH) {
         setTimeout(() => {
-            displayCurrentQuestion(); // Mostra la prossima domanda e i suoi pulsanti
+            displayCurrentQuestion();
         }, 1200); 
     } else {
         setTimeout(() => {
@@ -222,14 +208,38 @@ export function processAlterationExerciseInput(selectedAnswerName) {
 
 export function getAlterationExerciseButtonOptions() {
     if (currentQuestionIndex < EXERCISE_LENGTH && exerciseQuestions[currentQuestionIndex]) {
-        // Restituisce le opzioni come array di stringhe (i nomi per i pulsanti)
         return exerciseQuestions[currentQuestionIndex].answerOptions.map(opt => ({ name: opt, value: opt }));
-        // Oppure, se le opzioni sono già solo stringhe:
-        // return exerciseQuestions[currentQuestionIndex].answerOptions;
     }
-    return []; // Array vuoto se non ci sono più domande o la domanda non è definita
+    return []; 
 }
 
 export function getAlterationExerciseInputButtonsId() {
     return exerciseInputButtonsId;
+}
+
+// --- NUOVA FUNZIONE PER ESAME FINALE ---
+/**
+ * Genera una singola domanda casuale sul riconoscimento delle alterazioni
+ * e la restituisce in un formato standard per l'Exam Engine.
+ */
+export function generateRandomAlterationQuestion() {
+    // 1. Scegli una domanda casuale dalla lista completa
+    const randomIndex = Math.floor(Math.random() * ALL_POSSIBLE_NOTES_WITH_ALTERATIONS.length);
+    const questionData = ALL_POSSIBLE_NOTES_WITH_ALTERATIONS[randomIndex];
+
+    // 2. Costruisci l'oggetto domanda standardizzato
+    return {
+        type: 'alteration_identification',
+        inputType: 'buttons', // Questo tipo di domanda usa pulsanti di testo
+        data: {
+            // Dati necessari per VexFlow per disegnare la nota
+            notesToDisplay: [{ keys: [questionData.noteToDisplayKey], duration: 'w' }],
+            clef: 'treble',
+            keySignature: 'C', // Tonalità di Do per isolare l'alterazione
+            
+            // Dati necessari per creare i pulsanti di risposta
+            answerOptions: questionData.answerOptions
+        },
+        correctAnswer: questionData.correctAnswerName
+    };
 }

@@ -547,3 +547,42 @@ export function processVerificationInput(vexFlowNoteClicked) {
         updateFeedback(`Sbagliato. La nota suonata (${vexFlowNoteClicked}) non è la prossima richiesta (${nextNoteRequired || 'N/A'}).`);
     }
 }
+// --- NUOVA FUNZIONE PER ESAME FINALE ---
+/**
+ * Sceglie un esercizio casuale (scala o accordo) dalla sua lista
+ * e lo formatta come una domanda standard per l'Exam Engine.
+ * Questo tipo di domanda richiede l'input dalla tastiera.
+ */
+export function generateRandomVerificationQuestion() {
+    // 1. Scegli una categoria a caso (Scale Maggiori, Minori, Accordi)
+    const randomCategoryIndex = Math.floor(Math.random() * EXERCISE_CATEGORIES.length);
+    const chosenCategory = EXERCISE_CATEGORIES[randomCategoryIndex];
+
+    // 2. Scegli un esercizio a caso da quella categoria
+    const randomExerciseIndex = Math.floor(Math.random() * chosenCategory.exercises.length);
+    const chosenExercise = chosenCategory.exercises[randomExerciseIndex];
+
+    // 3. Estrai la prima nota o il primo accordo come risposta corretta.
+    // L'esame chiederà solo di suonare la prima nota di una scala o l'accordo.
+    // Se volessimo l'intera scala, la logica dell'esame dovrebbe diventare molto più complessa.
+    // Per ora, ci concentriamo sulla prima nota/accordo.
+    const firstNoteObject = chosenExercise.notes[0];
+    const correctAnswer = firstNoteObject.keys[0]; // Es. "c/4" per la scala di Do
+
+    // 4. Costruisci l'oggetto domanda standardizzato
+    return {
+        type: 'note_playback', // Un nome generico per "suona questa nota/accordo"
+        inputType: 'keyboard', // L'utente deve usare la tastiera
+        data: {
+            // Dati per VexFlow
+            notesToDisplay: chosenExercise.notes, // Passiamo l'intero esercizio da disegnare
+            clef: chosenExercise.clef || 'treble',
+            keySignature: chosenExercise.keySignature,
+            timeSignature: '4/4', // Aggiungiamo un tempo per coerenza
+
+            // Non ci sono opzioni di pulsanti per questo tipo di domanda
+            answerOptions: []
+        },
+        correctAnswer: correctAnswer // La prima nota/accordo che l'utente deve suonare
+    };
+}

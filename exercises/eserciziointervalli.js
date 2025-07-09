@@ -9,7 +9,6 @@ import { renderExercise } from '../vexflow_renderer.js'; // Assicurati percorso 
 // --- Costanti e Dati del Modulo ---
 const EXERCISE_LENGTH = 10; // Numero di domande
 const INTERVAL_DATA = [ // Dati degli intervalli (Nome breve per risposta, note VexFlow)
-    // Escludiamo Unisono dall'esercizio? O lo teniamo? Per ora lo tengo.
     { nameShort: "Unisono", note1: 'c/4', note2: 'c/4' },
     { nameShort: "Seconda", note1: 'c/4', note2: 'd/4' },
     { nameShort: "Terza", note1: 'c/4', note2: 'e/4' },
@@ -36,19 +35,16 @@ let exerciseInputButtonsId = 'interval-exercise-buttons';
 // Genera la sequenza di domande
 function generateIntervalExerciseQuestions() {
     exerciseQuestions = [];
-    const availableIntervals = [...INTERVAL_DATA]; // Copia per poter mescolare/selezionare
+    const availableIntervals = [...INTERVAL_DATA]; 
 
     for (let i = 0; i < EXERCISE_LENGTH; i++) {
-        // Scegli un intervallo casuale dai dati disponibili
         const randomIndex = Math.floor(Math.random() * availableIntervals.length);
         const chosenInterval = availableIntervals[randomIndex];
-        // Potremmo rimuovere l'intervallo scelto per evitare ripetizioni immediate, ma per 10 domande su 8 tipi va bene anche così.
-        // availableIntervals.splice(randomIndex, 1);
-
+        
         exerciseQuestions.push({
             note1: chosenInterval.note1,
             note2: chosenInterval.note2,
-            correctName: chosenInterval.nameShort // Nome breve per la risposta
+            correctName: chosenInterval.nameShort
         });
     }
     console.log(">>> ESERCIZIO INTERVALLI: Domande generate:", exerciseQuestions);
@@ -70,7 +66,7 @@ function displayCurrentIntervalQuestion() {
     const exerciseData = {
         clef: 'treble', timeSignature: null, keySignature: 'C', notes: notesToDraw
     };
-    const vexflowOptions = { showTextAnnotations: false }; // Non mostrare nomi Do, Re...
+    const vexflowOptions = { showTextAnnotations: false }; 
 
     try {
         renderExercise(exerciseStaffOutputId, exerciseData, vexflowOptions);
@@ -84,7 +80,6 @@ function displayCurrentIntervalQuestion() {
     updateFeedback(`Domanda ${currentQuestionIndex + 1} di ${EXERCISE_LENGTH}. Che intervallo è?`);
 }
 
-// Aggiorna feedback
 function updateFeedback(message, color = '#333') {
     if (!exerciseFeedbackId) return;
     const feedbackDiv = document.getElementById(exerciseFeedbackId);
@@ -93,7 +88,6 @@ function updateFeedback(message, color = '#333') {
 
 // --- Funzioni Esportate ---
 
-// Prepara la UI per l'esercizio intervalli
 export function setupIntervalExerciseUI(containerElementOrId) {
     console.log(">>> ESERCIZIO INTERVALLI: setupIntervalExerciseUI chiamato.");
      const container = (typeof containerElementOrId === 'string')
@@ -101,29 +95,18 @@ export function setupIntervalExerciseUI(containerElementOrId) {
         : containerElementOrId;
     if (!container) { console.error(`>>> ESERCIZIO INTERVALLI: Contenitore UI non trovato!`); return; }
 
-    container.innerHTML = ''; // Pulisce container
-
-    // Crea struttura HTML
-    const exerciseDiv = document.createElement('div');
-    exerciseDiv.id = 'interval-exercise-container'; // ID per CSS
-    exerciseDiv.innerHTML = `
-        <h2>Esercizio Intervalli (Capitolo 3)</h2>
-        <p>Identifica l'intervallo mostrato sul pentagramma cliccando il pulsante corretto.</p>
-        <div id="${exerciseStaffOutputId}" style="height: 120px;">
-            <!-- VexFlow disegnerà le note qui -->
-        </div>
-        <div id="${exerciseFeedbackId}">
-            <!-- Feedback -->
-        </div>
-        <div id="${exerciseInputButtonsId}">
-            <!-- Pulsanti risposta ("Seconda", "Terza"...) -->
+    container.innerHTML = `
+        <div id="interval-exercise-container">
+            <h2>Esercizio Intervalli (Capitolo 3)</h2>
+            <p>Identifica l'intervallo mostrato sul pentagramma cliccando il pulsante corretto.</p>
+            <div id="${exerciseStaffOutputId}" style="height: 120px;"></div>
+            <div id="${exerciseFeedbackId}"></div>
+            <div id="${exerciseInputButtonsId}"></div>
         </div>
     `;
-    container.appendChild(exerciseDiv);
     console.log(">>> ESERCIZIO INTERVALLI: Struttura UI creata.");
 }
 
-// Avvia un nuovo esercizio
 export function startIntervalExercise() {
     console.log(">>> ESERCIZIO INTERVALLI: startIntervalExercise chiamato.");
     currentQuestionIndex = 0;
@@ -134,7 +117,6 @@ export function startIntervalExercise() {
     console.log(">>> ESERCIZIO INTERVALLI: Esercizio avviato.");
 }
 
-// Processa la risposta dell'utente
 export function processIntervalExerciseInput(selectedIntervalName) {
     console.log(`>>> ESERCIZIO INTERVALLI: processIntervalExerciseInput chiamato con: ${selectedIntervalName}`);
     if (currentQuestionIndex >= exerciseQuestions.length) { console.log("Esercizio già completato."); return; }
@@ -142,49 +124,62 @@ export function processIntervalExerciseInput(selectedIntervalName) {
     const correctAnswerName = exerciseQuestions[currentQuestionIndex].correctName;
 
     if (selectedIntervalName === correctAnswerName) {
-        // Corretto
         updateFeedback(`Corretto! Era una ${correctAnswerName}. 🎉`, 'green');
-        console.log("Risposta corretta!");
         correctAnswersCount++;
-        // Passa alla prossima dopo breve ritardo
-        setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < exerciseQuestions.length) {
-                displayCurrentIntervalQuestion();
-            } else {
-                // Fine esercizio
-                const endTime = Date.now();
-                const elapsedTime = (endTime - exerciseStartTime) / 1000;
-                updateFeedback(`Esercizio Finito! Corrette: ${correctAnswersCount}/${EXERCISE_LENGTH} in ${elapsedTime.toFixed(1)}s. 🏆`, 'blue');
-                console.log("Esercizio completato!");
-            }
-        }, 1200);
     } else {
-        // Sbagliato
-        updateFeedback(`Sbagliato. La risposta corretta era ${correctAnswerName}. Prova la prossima!`, 'red');
-        console.log(`Risposta sbagliata. Scelto: ${selectedIntervalName}, Corretta: ${correctAnswerName}`);
-        // Passa alla prossima dopo ritardo maggiore
-        setTimeout(() => {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < exerciseQuestions.length) {
-                displayCurrentIntervalQuestion();
-            } else {
-                 // Fine esercizio
-                const endTime = Date.now();
-                const elapsedTime = (endTime - exerciseStartTime) / 1000;
-                updateFeedback(`Esercizio Finito! Corrette: ${correctAnswersCount}/${EXERCISE_LENGTH} in ${elapsedTime.toFixed(1)}s. 🏆`, 'blue');
-                console.log("Esercizio completato!");
-            }
-        }, 1800);
+        updateFeedback(`Sbagliato. La risposta corretta era ${correctAnswerName}.`, 'red');
     }
+    
+    const delay = selectedIntervalName === correctAnswerName ? 1200 : 1800;
+
+    currentQuestionIndex++;
+    
+    setTimeout(() => {
+        if (currentQuestionIndex < exerciseQuestions.length) {
+            displayCurrentIntervalQuestion();
+        } else {
+            const endTime = Date.now();
+            const elapsedTime = (endTime - exerciseStartTime) / 1000;
+            updateFeedback(`Esercizio Finito! Corrette: ${correctAnswersCount}/${EXERCISE_LENGTH} in ${elapsedTime.toFixed(1)}s. 🏆`, 'blue');
+            document.getElementById(exerciseInputButtonsId).innerHTML = ''; // Pulisci i pulsanti alla fine
+        }
+    }, delay);
 }
 
-// Restituisce i nomi brevi per i pulsanti di risposta ("Seconda", "Terza"...)
 export function getIntervalExerciseButtonNames() {
     return INTERVAL_DATA.map(data => data.nameShort);
 }
 
-// Restituisce l'ID del contenitore pulsanti
 export function getIntervalExerciseInputButtonsId() {
     return exerciseInputButtonsId;
+}
+
+// --- NUOVA FUNZIONE PER ESAME FINALE ---
+/**
+ * Genera una singola domanda casuale sul riconoscimento degli intervalli
+ * e la restituisce in un formato standard per l'Exam Engine.
+ */
+export function generateRandomIntervalQuestion() {
+    // 1. Scegli un intervallo casuale
+    const randomIndex = Math.floor(Math.random() * INTERVAL_DATA.length);
+    const chosenInterval = INTERVAL_DATA[randomIndex];
+
+    // 2. Costruisci l'oggetto domanda standardizzato
+    return {
+        type: 'interval_identification',
+        inputType: 'buttons', // Anche questo tipo di domanda usa pulsanti
+        data: {
+            // Dati per VexFlow per disegnare le due note
+            notesToDisplay: [
+                { keys: [chosenInterval.note1], duration: 'h' },
+                { keys: [chosenInterval.note2], duration: 'h' }
+            ],
+            clef: 'treble',
+            keySignature: 'C',
+            
+            // Dati per i pulsanti di risposta
+            answerOptions: INTERVAL_DATA.map(d => d.nameShort)
+        },
+        correctAnswer: chosenInterval.nameShort
+    };
 }

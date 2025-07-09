@@ -50,10 +50,8 @@ function generateAnswerOptions(correctTriadName) {
     const options = new Set();
     options.add(correctTriadName); // Aggiungi la risposta corretta
 
-    // Estrai i nomi di tutte le triadi disponibili come possibili distrattori
     const allTriadNames = TRIAD_DEFINITIONS.map(t => t.nameComplete);
 
-    // Aggiungi distrattori fino a raggiungere il numero desiderato di opzioni
     while (options.size < NUMBER_OF_ANSWER_OPTIONS && options.size < allTriadNames.length) {
         const randomDistractor = getRandomElement(allTriadNames);
         options.add(randomDistractor); // Set gestisce i duplicati automaticamente
@@ -63,12 +61,9 @@ function generateAnswerOptions(correctTriadName) {
 
 function generateTriadExerciseQuestions() {
     exerciseQuestions = [];
-    const availableTriads = [...TRIAD_DEFINITIONS]; // Lavora su una copia
+    const availableTriads = [...TRIAD_DEFINITIONS]; 
 
     for (let i = 0; i < EXERCISE_LENGTH; i++) {
-        // Scegli una triade casuale per la domanda corrente
-        // Per assicurare varietà, potremmo voler evitare ripetizioni immediate se EXERCISE_LENGTH > TRIAD_DEFINITIONS.length
-        // Ma per 10 domande su 7 triadi, la casualità semplice va bene.
         const chosenTriad = getRandomElement(availableTriads);
 
         exerciseQuestions.push({
@@ -89,21 +84,15 @@ function displayCurrentTriadQuestion() {
 
     const question = exerciseQuestions[currentQuestionIndex];
     console.log(`>>> ESERCIZIO TRIADI: Domanda ${currentQuestionIndex + 1}: Note ${question.notesToDisplay.join(', ')} (Risposta: ${question.correctAnswerName}) Opzioni:`, question.answerOptions);
-
-    // --- MODIFICA CHIAVE QUI ---
-    // Invece di mappare ogni nota a un oggetto separato, creiamo un singolo
-    // oggetto nota (l'accordo) il cui array 'keys' contiene tutte le note della triade.
+    
     const notesToDraw = [{
-        keys: question.notesToDisplay, // Passa l'intero array di note qui!
-        duration: 'w', // 'w' (whole note / semibreve) è ideale per un accordo statico
+        keys: question.notesToDisplay, 
+        duration: 'w', 
         status: 'default'
     }];
-    // Questo produce: [{keys: ['c/4', 'e/4', 'g/4'], duration: 'w', ...}]
-    // che VexFlow interpreta come "disegna un accordo con le note Do, Mi, Sol".
-
-    // Impostiamo una time signature per chiarezza, anche se non la mostriamo
+    
     const exerciseData = { clef: 'treble', timeSignature: '4/4', keySignature: 'C', notes: notesToDraw };
-    const vexflowOptions = { showTextAnnotations: false }; // Non mostrare nomi Do, Re... sulla nota
+    const vexflowOptions = { showTextAnnotations: false };
 
     try {
         renderExercise(exerciseStaffOutputId, exerciseData, vexflowOptions);
@@ -115,7 +104,6 @@ function displayCurrentTriadQuestion() {
 
     updateFeedback(`Domanda ${currentQuestionIndex + 1} di ${EXERCISE_LENGTH}. Qual è questa triade?`);
 
-    // --- CREAZIONE PULSANTI DINAMICA (invariata) ---
     const buttonsContainer = document.getElementById(exerciseInputButtonsId);
     if (buttonsContainer) {
         buttonsContainer.innerHTML = '';
@@ -126,17 +114,11 @@ function displayCurrentTriadQuestion() {
                 button.classList.add('exercise-note-button');
                 button.dataset.triadAnswer = optionName;
                 button.addEventListener('click', () => {
-                    console.log(`>>> ESERCIZIO TRIADI: Pulsante cliccato: ${optionName}`);
                     processTriadExerciseInput(optionName);
                 });
                 buttonsContainer.appendChild(button);
             });
-            console.log(">>> ESERCIZIO TRIADI: Pulsanti opzione creati:", question.answerOptions);
-        } else {
-            console.warn(">>> ESERCIZIO TRIADI: Nessuna opzione di risposta generata.");
         }
-    } else {
-        console.error(`Contenitore pulsanti "${exerciseInputButtonsId}" non trovato!`);
     }
 }
 
@@ -151,20 +133,16 @@ export function setupTriadExerciseUI(containerElementOrId) {
     console.log(">>> ESERCIZIO TRIADI: setupTriadExerciseUI chiamato.");
     const container = (typeof containerElementOrId === 'string') ? document.getElementById(containerElementOrId) : containerElementOrId;
     if (!container) { console.error("Contenitore UI non trovato!"); return; }
-    container.innerHTML = '';
-
-    const exerciseDiv = document.createElement('div');
-    exerciseDiv.id = 'triad-exercise-container'; // ID per CSS
-    exerciseDiv.innerHTML = `
-        <h2>Esercizio Triadi (Capitolo 5)</h2>
-        <p>Identifica la triade mostrata sul pentagramma.</p>
-        <div id="${exerciseStaffOutputId}" style="height: 120px;"></div>
-        <div id="${exerciseFeedbackId}"></div>
-        <div id="${exerciseInputButtonsId}">
-            <!-- Pulsanti risposta verranno creati dinamicamente -->
+    
+    container.innerHTML = `
+        <div id="triad-exercise-container">
+            <h2>Esercizio Triadi (Capitolo 5)</h2>
+            <p>Identifica la triade mostrata sul pentagramma.</p>
+            <div id="${exerciseStaffOutputId}" style="height: 120px;"></div>
+            <div id="${exerciseFeedbackId}"></div>
+            <div id="${exerciseInputButtonsId}"></div>
         </div>
     `;
-    container.appendChild(exerciseDiv);
     console.log(">>> ESERCIZIO TRIADI: Struttura UI creata.");
 }
 
@@ -172,15 +150,15 @@ export function startTriadExercise() {
     console.log(">>> ESERCIZIO TRIADI: startTriadExercise chiamato.");
     currentQuestionIndex = 0;
     correctAnswersCount = 0;
-    generateTriadExerciseQuestions(); // Genera le domande e le loro opzioni
-    displayCurrentTriadQuestion();    // Mostra la prima domanda e i suoi pulsanti
+    generateTriadExerciseQuestions();
+    displayCurrentTriadQuestion();
     exerciseStartTime = Date.now();
     console.log(">>> ESERCIZIO TRIADI: Esercizio avviato.");
 }
 
-export function processTriadExerciseInput(selectedTriadName) { // Es. "Do Maggiore"
+export function processTriadExerciseInput(selectedTriadName) {
     console.log(`>>> ESERCIZIO TRIADI: Input: ${selectedTriadName}`);
-    if (currentQuestionIndex >= EXERCISE_LENGTH) { // Controllo per evitare errori se si clicca dopo la fine
+    if (currentQuestionIndex >= EXERCISE_LENGTH) {
         console.log("Esercizio già formalmente completato.");
         return;
     }
@@ -194,29 +172,53 @@ export function processTriadExerciseInput(selectedTriadName) { // Es. "Do Maggio
         updateFeedback(`Sbagliato. La risposta corretta era ${correctAnswerName}.`, 'red');
     }
 
-    currentQuestionIndex++; // Avanza alla prossima domanda o alla fine
+    currentQuestionIndex++;
+    
+    const delay = selectedTriadName === correctAnswerName ? 1200 : 1800;
 
-    if (currentQuestionIndex < EXERCISE_LENGTH) {
-        setTimeout(() => {
+    setTimeout(() => {
+        if (currentQuestionIndex < EXERCISE_LENGTH) {
             displayCurrentTriadQuestion();
-        }, selectedTriadName === correctAnswerName ? 1200 : 1800); // Ritardo diverso per corretto/sbagliato
-    } else {
-        // Fine esercizio
-        const endTime = Date.now();
-        const elapsedTimeSeconds = (endTime - exerciseStartTime) / 1000;
-        setTimeout(() => { // Leggero ritardo per leggere l'ultimo feedback
+        } else {
+            const endTime = Date.now();
+            const elapsedTimeSeconds = (endTime - exerciseStartTime) / 1000;
             updateFeedback(`Esercizio Completato! Risposte corrette: ${correctAnswersCount} su ${EXERCISE_LENGTH} in ${elapsedTimeSeconds.toFixed(1)} secondi. 🏆`, 'blue');
-            console.log(">>> ESERCIZIO TRIADI: Completato!", { correct: correctAnswersCount, total: EXERCISE_LENGTH, time: elapsedTimeSeconds });
-            // TODO: Aggiungere pulsante per ricominciare o tornare alla selezione
             const buttonsContainer = document.getElementById(exerciseInputButtonsId);
-            if(buttonsContainer) buttonsContainer.innerHTML = ''; // Pulisce i pulsanti alla fine
-        }, selectedTriadName === correctAnswerName ? 1200 : 1800);
-    }
+            if(buttonsContainer) buttonsContainer.innerHTML = '';
+        }
+    }, delay);
 }
-
-// Questa funzione non è più necessaria per fornire nomi statici a main.js
-// export function getTriadExerciseButtonNames() { /* ... */ }
 
 export function getTriadExerciseInputButtonsId() {
     return exerciseInputButtonsId;
+}
+
+
+// --- NUOVA FUNZIONE PER ESAME FINALE ---
+/**
+ * Genera una singola domanda casuale sull'identificazione delle triadi
+ * e la restituisce in un formato standard per l'Exam Engine.
+ */
+export function generateRandomTriadQuestion() {
+    // 1. Scegli una triade casuale
+    const chosenTriad = getRandomElement(TRIAD_DEFINITIONS);
+
+    // 2. Genera le opzioni di risposta per quella triade
+    const answerOptions = generateAnswerOptions(chosenTriad.nameComplete);
+
+    // 3. Costruisci l'oggetto domanda standardizzato
+    return {
+        type: 'triad_identification',
+        inputType: 'buttons', // Questo tipo di domanda usa pulsanti di testo
+        data: {
+            // Dati per VexFlow per disegnare l'accordo
+            notesToDisplay: [{ keys: chosenTriad.notes, duration: 'w' }],
+            clef: 'treble',
+            keySignature: 'C',
+            
+            // Dati per i pulsanti di risposta
+            answerOptions: answerOptions
+        },
+        correctAnswer: chosenTriad.nameComplete
+    };
 }

@@ -37,7 +37,10 @@ import { setupAlterationExerciseUI, startAlterationExercise, processAlterationEx
 import { setupTriadExerciseUI, startTriadExercise, processTriadExerciseInput, getTriadExerciseInputButtonsId } from './exercises/eserciziotriadi.js';
 
 // Import modulo Esercizi di Verifica
-import { setupVerificationExerciseUI, startVerificationExercise, processVerificationInput } from './verification_exercise.js'; // <<<< PERCORSO CORRETTO QUI
+import { setupVerificationExerciseUI, startVerificationExercise, processVerificationInput } from './verification_exercise.js';
+
+// NUOVO: Import per il futuro modulo Esame
+import { setupExamUI, startExam, getActiveExamInputHandler } from './esame_completo.js';
 
 
 // --- Variabili Globali e Riferimenti HTML ---
@@ -53,6 +56,7 @@ const btnHome = document.getElementById('btn-home');
 const btnTeoriaMusicale = document.getElementById('btn-teoria-musicale');
 const btnEserciziTeorici = document.getElementById('btn-esercizi-teorici');
 const btnVerifica = document.getElementById('btn-verifica');
+const btnEsame = document.getElementById('btn-esame'); // NUOVO: Riferimento al pulsante Esame
 
 const contentArea = document.getElementById('content-area');
 const mainTvScreensContainer = document.getElementById('main-tv-screens-container');
@@ -192,6 +196,7 @@ function setupNavigationButtons() {
     if (btnTeoriaMusicale) btnTeoriaMusicale.addEventListener('click', () => showSection('teoria'));
     if (btnEserciziTeorici) btnEserciziTeorici.addEventListener('click', () => showSection('selezione_esercizi'));
     if (btnVerifica) btnVerifica.addEventListener('click', () => showSection('verifica'));
+    if (btnEsame) btnEsame.addEventListener('click', () => showSection('esame')); // NUOVO: Listener per il pulsante Esame
 }
 
 async function playNoteSequence() {
@@ -236,6 +241,16 @@ function handleNoteInput(vexFlowNote, midiNumber, velocity) {
     console.log(`>>> MAIN handleNoteInput: Nota=${vexFlowNote}, MIDI=${midiNumber}, Vel=${velocity}, Durata=${currentSelectedDuration}, Sezione=${currentSection}`);
     if (midiNumber !== undefined && midiNumber !== null && midiNumber >= 0 && velocity > 0) {
         playNoteSound(midiNumber, 0.7, velocity);
+    }
+    
+    // NUOVO: Blocco di controllo per l'input dell'esame
+    if (currentSection === 'esame') {
+        const examHandler = getActiveExamInputHandler();
+        if (typeof examHandler === 'function') {
+            console.log(`>>> MAIN: Reindirizzando input tastiera all'esame.`);
+            examHandler(vexFlowNote);
+            return; // L'input è stato gestito, esci
+        }
     }
 
     if (currentSection === 'verifica' && activeInputHandler === processVerificationInput) {
@@ -310,6 +325,7 @@ function showSection(sectionName) {
     if (sectionName === 'home' && btnHome) btnHome.classList.add('active');
     else if (sectionName === 'teoria' && btnTeoriaMusicale) btnTeoriaMusicale.classList.add('active');
     else if (sectionName === 'verifica' && btnVerifica) btnVerifica.classList.add('active');
+    else if (sectionName === 'esame' && btnEsame) btnEsame.classList.add('active'); // NUOVO: Gestione classe 'active' per esame
     else {
         const isExerciseRelated = ['selezione_esercizi', 'quiz_notes', 'exercise_durations', 'exercise_intervals', 'exercise_alterations', 'exercise_triads'].includes(sectionName);
         if (isExerciseRelated && btnEserciziTeorici) btnEserciziTeorici.classList.add('active');
@@ -344,6 +360,10 @@ function showSection(sectionName) {
             setupVerificationExerciseUI(contentArea.id);
             startVerificationExercise();
             activeInputHandler = processVerificationInput;
+            break;
+        case 'esame': // NUOVO: Case per avviare la sezione esame
+            setupExamUI(contentArea.id); // Passiamo l'ID, che è "content-area"
+            startExam();
             break;
         case 'quiz_notes': setupQuizEnvironment(); break;
         case 'exercise_durations': setupDurationExerciseEnvironment(); break;

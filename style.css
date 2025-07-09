@@ -324,3 +324,25 @@ body {
     border-color: #2a2a2a !important; box-shadow: inset 0 -1px 2px rgba(0,0,0,0.5) !important;
 }
 .key.key-is-hidden .note-name-black { display: none !important; }
+/* --- Stili per i Pulsanti dell'Esame Finale --- */
+#exam-input-area .exercise-note-button {
+    background-color: #673ab7; /* Un bel viola, come altri pulsanti */
+    color: white;              /* Testo bianco per un buon contrasto */
+    border: 1px solid #512da8; /* Bordo leggermente più scuro */
+    font-weight: bold;
+    min-width: 90px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+#exam-input-area .exercise-note-button:hover {
+    background-color: #5e35b1; /* Viola più scuro al passaggio del mouse */
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    filter: none; /* Rimuove eventuali effetti di 'brightness' ereditati */
+}
+
+#exam-input-area .exercise-note-button:active {
+    background-color: #4527a0; /* Viola ancora più scuro quando cliccato */
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    filter: none;
+}
