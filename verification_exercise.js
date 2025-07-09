@@ -201,25 +201,59 @@ let verificationKeyboardId = 'verification-keyboard-keys-verify';
 let categorySelectId = 'verification-category-select';
 let exerciseSelectId = 'verification-exercise-select';
 
-// Mappa per aiutare a scegliere l'enarmonico corretto (non usata attivamente per la cancellazione con la logica attuale)
-const MIDI_TO_ENHARMONIC_NAMES = {
-    1:  { sharp: "c#", flat: "db" }, 3:  { sharp: "d#", flat: "eb" },
-    6:  { sharp: "f#", flat: "gb" }, 8:  { sharp: "g#", flat: "ab" },
-    10: { sharp: "a#", flat: "bb" }
+// ====================================================================
+// --- BLOCCO DI CODICE CORRETTO ---
+// Sostituisce la vecchia mappa e la vecchia funzione `getEnharmonicTarget`
+// ====================================================================
+
+// Mappa COMPLETA che associa l'indice MIDI (0-11) al nome della nota.
+const MIDI_INDEX_TO_NOTE_DATA = {
+    0: { natural: "c" },
+    1: { sharp: "c#", flat: "db" },
+    2: { natural: "d" },
+    3: { sharp: "d#", flat: "eb" },
+    4: { natural: "e" },
+    5: { natural: "f" },
+    6: { sharp: "f#", flat: "gb" },
+    7: { natural: "g" },
+    8: { sharp: "g#", flat: "ab" },
+    9: { natural: "a" },
+    10: { sharp: "a#", flat: "bb" },
+    11: { natural: "b" }
 };
+
+// Funzione 'getEnharmonicTarget' riscritta per essere più robusta e chiara.
 function getEnharmonicTarget(midiNoteNumber, keySignature) {
     const octave = Math.floor(midiNoteNumber / 12) - 1;
     const noteIndexInOctave = midiNoteNumber % 12;
-    if (MIDI_TO_ENHARMONIC_NAMES[noteIndexInOctave]) {
-        const enharmonics = MIDI_TO_ENHARMONIC_NAMES[noteIndexInOctave];
-        const keyUsesFlats = (keySignature.includes("b") || ["F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb"].includes(keySignature.toUpperCase()));
-        if (keyUsesFlats) return `${enharmonics.flat}/${octave}`; // Semplificazione: preferisci bemolle se la chiave li usa
-        return `${enharmonics.sharp}/${octave}`; // Altrimenti diesis
-    } else {
-        const naturalNoteName = Vex.Flow.integerToNoteName(noteIndexInOctave);
-        return `${naturalNoteName.toLowerCase()}/${octave}`;
+
+    const noteData = MIDI_INDEX_TO_NOTE_DATA[noteIndexInOctave];
+
+    if (!noteData) {
+        console.error(`VERIFICA: Indice MIDI non valido: ${noteIndexInOctave}`);
+        return null; // Gestisce un caso anomalo
+    }
+
+    // Se la nota ha una versione 'naturale', usiamo quella. Questo ora funziona!
+    if (noteData.natural) {
+        return `${noteData.natural}/${octave}`;
+    }
+    // Altrimenti, è una nota alterata e decidiamo tra diesis e bemolle.
+    else {
+        // Logica per decidere se usare i bemolle
+        const keyUsesFlats = (
+            keySignature.includes("b") ||
+            ["F", "Bb", "Eb", "Ab", "Db", "Gb", "Cb", "Gm", "Dm", "Cm", "Fm"].includes(keySignature)
+        );
+
+        const noteName = keyUsesFlats ? noteData.flat : noteData.sharp;
+        return `${noteName}/${octave}`;
     }
 }
+// ====================================================================
+// --- FINE DEL BLOCCO CORRETTO ---
+// ====================================================================
+
 
 function displayCurrentExerciseNotes() {
     const staffDiv = document.getElementById(verificationStaffId);
@@ -351,8 +385,10 @@ function setupVerificationKeyboardListeners() {
             if (isNaN(midiNumero)) return;
             playNoteSound(midiNumero, 0.7, 100);
             const vexFlowKeyTarget = getEnharmonicTarget(midiNumero, currentExerciseData.keySignature);
-            console.log(`VERIFICA: Tasto MIDI ${midiNumero} premuto. Tonalità: ${currentExerciseData.keySignature}. Target: ${vexFlowKeyTarget}`);
-            processVerificationInput(vexFlowKeyTarget);
+            if (vexFlowKeyTarget) { // Aggiunto controllo per evitare errori se getEnharmonicTarget ritorna null
+                console.log(`VERIFICA: Tasto MIDI ${midiNumero} premuto. Tonalità: ${currentExerciseData.keySignature}. Target: ${vexFlowKeyTarget}`);
+                processVerificationInput(vexFlowKeyTarget);
+            }
             newKeyElement.classList.add('playing'); setTimeout(() => { newKeyElement.classList.remove('playing'); }, 200);
         });
     });
@@ -449,21 +485,34 @@ export function processVerificationInput(vexFlowNoteClicked) {
 
     const attemptRemove = (notesArray) => {
         if (!notesArray || notesArray.length === 0) return false;
-        for (let i = notesArray.length - 1; i >= 0; i--) {
+        // La logica di rimozione deve cercare la prima nota/accordo corrispondente e fermarsi.
+        // Partire dall'inizio (i=0) è più intuitivo per l'utente, che suona da sinistra a destra.
+        for (let i = 0; i < notesArray.length; i++) {
             if (notesArray[i] && notesArray[i].keys && notesArray[i].keys.length > 0) {
                 let matchInElement = false;
-                // Per accordi (più keys) o note singole
+                // Per accordi (più keys) o note singole, controlla se la nota suonata è presente.
+                // NON confrontare l'intero accordo.
                 for (const keyInElement of notesArray[i].keys) {
                     if (keyInElement.toLowerCase() === targetNoteFromKeyboard) {
                         matchInElement = true;
                         break;
                     }
                 }
+                
+                // Se la nota fa parte del primo elemento (nota o accordo) della sequenza
                 if (matchInElement) {
-                    console.log(`VERIFICA: NOTA TROVATA! Rimuovendo elemento con nota ${targetNoteFromKeyboard} da array.`);
+                     // Caso speciale: se è un accordo, lo cancelliamo solo se è la prima nota dell'esercizio.
+                     // In questo esercizio, gli accordi sono singoli, quindi questa logica funziona.
+                     // Per sequenze di accordi, la logica andrebbe rivista.
+                    console.log(`VERIFICA: NOTA TROVATA! Rimuovendo elemento [${notesArray[i].keys.join(', ')}] dall'array.`);
                     notesArray.splice(i, 1);
                     return true;
                 }
+                
+                // Per le scale, l'utente DEVE suonare la prima nota della sequenza.
+                // Se la nota suonata non è nella PRIMA nota/accordo da suonare, non facciamo nulla.
+                // Questo previene la cancellazione di note a caso nel mezzo della scala.
+                break; // Usciamo dal ciclo dopo aver controllato solo il primo elemento (i=0).
             }
         }
         return false;
@@ -489,9 +538,12 @@ export function processVerificationInput(vexFlowNoteClicked) {
         if ((currentExerciseData.layout === "grand" && noTreble && noBass) || (currentExerciseData.layout === "single" && noSingle)) {
             updateFeedback("Ottimo! Hai cancellato tutte le note! 🎉");
         } else {
-            updateFeedback(`Nota ${vexFlowNoteClicked} cancellata.`);
+            updateFeedback(`Nota ${vexFlowNoteClicked} cancellata. Suona la prossima.`);
         }
     } else {
-        updateFeedback(`La nota ${vexFlowNoteClicked} non è sul pentagramma o è già stata cancellata.`);
+        const nextNoteRequired = currentExerciseData.layout === 'single' ?
+                                 (currentExerciseData.notes[0]?.keys.join(', ')) :
+                                 (currentExerciseData.notesTreble[0]?.keys.join(', ') || currentExerciseData.notesBass[0]?.keys.join(', '));
+        updateFeedback(`Sbagliato. La nota suonata (${vexFlowNoteClicked}) non è la prossima richiesta (${nextNoteRequired || 'N/A'}).`);
     }
 }

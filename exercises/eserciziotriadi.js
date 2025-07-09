@@ -84,18 +84,25 @@ function displayCurrentTriadQuestion() {
     if (!exerciseStaffOutputId) { console.error("ID pentagramma non impostato!"); return; }
     if (currentQuestionIndex >= exerciseQuestions.length) {
         console.warn("Fine esercizio, nessuna domanda da mostrare.");
-        // La logica di fine esercizio è gestita in processTriadExerciseInput
         return;
     }
 
     const question = exerciseQuestions[currentQuestionIndex];
     console.log(`>>> ESERCIZIO TRIADI: Domanda ${currentQuestionIndex + 1}: Note ${question.notesToDisplay.join(', ')} (Risposta: ${question.correctAnswerName}) Opzioni:`, question.answerOptions);
 
-    const notesToDraw = question.notesToDisplay.map(noteKey => ({
-        keys: [noteKey], duration: 'h', status: 'default' // Mostra come semibrevi o minime
-    }));
+    // --- MODIFICA CHIAVE QUI ---
+    // Invece di mappare ogni nota a un oggetto separato, creiamo un singolo
+    // oggetto nota (l'accordo) il cui array 'keys' contiene tutte le note della triade.
+    const notesToDraw = [{
+        keys: question.notesToDisplay, // Passa l'intero array di note qui!
+        duration: 'w', // 'w' (whole note / semibreve) è ideale per un accordo statico
+        status: 'default'
+    }];
+    // Questo produce: [{keys: ['c/4', 'e/4', 'g/4'], duration: 'w', ...}]
+    // che VexFlow interpreta come "disegna un accordo con le note Do, Mi, Sol".
 
-    const exerciseData = { clef: 'treble', timeSignature: null, keySignature: 'C', notes: notesToDraw };
+    // Impostiamo una time signature per chiarezza, anche se non la mostriamo
+    const exerciseData = { clef: 'treble', timeSignature: '4/4', keySignature: 'C', notes: notesToDraw };
     const vexflowOptions = { showTextAnnotations: false }; // Non mostrare nomi Do, Re... sulla nota
 
     try {
@@ -108,21 +115,19 @@ function displayCurrentTriadQuestion() {
 
     updateFeedback(`Domanda ${currentQuestionIndex + 1} di ${EXERCISE_LENGTH}. Qual è questa triade?`);
 
-    // --- CREAZIONE PULSANTI DINAMICA ---
+    // --- CREAZIONE PULSANTI DINAMICA (invariata) ---
     const buttonsContainer = document.getElementById(exerciseInputButtonsId);
     if (buttonsContainer) {
-        buttonsContainer.innerHTML = ''; // Pulisci vecchi pulsanti
+        buttonsContainer.innerHTML = '';
         if (question.answerOptions && question.answerOptions.length > 0) {
             question.answerOptions.forEach(optionName => {
                 const button = document.createElement('button');
-                button.textContent = optionName; // Es. "Do Maggiore"
-                button.classList.add('exercise-note-button'); // Stile base
-                // Applica stili specifici per i pulsanti di questo esercizio se necessario
-                button.dataset.triadAnswer = optionName; // Data attribute per il listener o stile
-
+                button.textContent = optionName;
+                button.classList.add('exercise-note-button');
+                button.dataset.triadAnswer = optionName;
                 button.addEventListener('click', () => {
                     console.log(`>>> ESERCIZIO TRIADI: Pulsante cliccato: ${optionName}`);
-                    processTriadExerciseInput(optionName); // Chiama il gestore dell'input
+                    processTriadExerciseInput(optionName);
                 });
                 buttonsContainer.appendChild(button);
             });
